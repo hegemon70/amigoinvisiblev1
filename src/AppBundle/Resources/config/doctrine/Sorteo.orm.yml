@@ -1,0 +1,32 @@
+AppBundle\Entity\Sorteo:
+    type: entity
+    table: sorteo
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        codigoSorteo:
+            type: bigint
+            nullable: false
+            options:
+                unsigned: false
+            column: codigo_sorteo
+        mensaje:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+        asunto:
+            type: string
+            nullable: true
+            length: 255
+            options:
+                fixed: false
+    lifecycleCallbacks: {  }

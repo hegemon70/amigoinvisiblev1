@@ -1,0 +1,42 @@
+AppBundle\Entity\Sesion:
+    type: entity
+    table: sesion
+    indexes:
+        id_sorteo:
+            columns:
+                - id_sorteo
+    id:
+        id:
+            type: integer
+            nullable: false
+            options:
+                unsigned: false
+            id: true
+            generator:
+                strategy: IDENTITY
+    fields:
+        codSesion:
+            type: string
+            nullable: false
+            length: 255
+            options:
+                fixed: false
+            column: cod_sesion
+        fechaCreacion:
+            type: datetime
+            nullable: false
+            options:
+                default: CURRENT_TIMESTAMP
+            column: fecha_creacion
+    manyToOne:
+        idSorteo:
+            targetEntity: Sorteo
+            cascade: {  }
+            fetch: LAZY
+            mappedBy: null
+            inversedBy: null
+            joinColumns:
+                id_sorteo:
+                    referencedColumnName: id
+            orphanRemoval: false
+    lifecycleCallbacks: {  }
