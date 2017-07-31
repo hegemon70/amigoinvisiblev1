@@ -6,6 +6,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\DependencyInjection\Container;
+use Doctrine\Common\Collections\ArrayCollection;
+use AppBundle\Entity\Participante;
+use Psr\Log\LoggerInterface;
 
 class Helpers {
  
@@ -41,26 +44,56 @@ class Helpers {
          $count=-1;
          try 
          {
-         	$em = $this->getDoctrine()->getManager();
-        	$sesion_repo=$em->getRepository("AppBundle:Sesion");
+         	//$em = $this->getDoctrine()->getManager();
+        	$sesion_repo=$this->$em->getRepository("AppBundle:Sesion");
         	$sesiones= $sesion_repo->findOnecodSesion($codSesion);
         	$count=count($sesiones);
-         	/*
-            $em = $this->getDoctrine()->getManager();
-            $qb = $em->createQueryBuilder();
-            $qb->select('count(sesion.id)');
-            $qb->from('AppBundle:Sesion','sesion');
-            $qb->where('sesion.codSesion = ?1');
-            $qb->setParameter(1,$codSesion);
-            $count= $qb->getQuery()->getSingleScalarResult();
-            */
-             
+            
         } 
         catch (Exception $e) 
         {
             $logger->error('fallo al leer el num sesion actual esta guardada: '. $e->getMessage);   
         }     
         return $count;
+    }
+/*
+    public function dameArrayParticipantesNoSorteados($idSorteoProv)
+    {
+         $logger=$this->get('logger');
+          try {
+            $em = $this->getDoctrine()->getManager();
+            $qb = $em->createQueryBuilder();
+            $qb->select('p');
+            $qb->from('AppBundle:Participante','p');
+            $qb->where('p.sorteo = ?1');
+            $qb->setParameter(1,$idSorteoProv);
+            //TODO CAMBIAR NULL POR LA ID DEL SORTEO DE LA SESSION
+            $idParticipantes = $qb->getQuery()->getArrayResult();
+        } catch (Exception $e) {
+            $idParticipantes=NULL;
+            $logger.error('error en DefaultController/dameArrayParticipantesNoSorteados: '.$e->getMessage());
+        }
+        return $idParticipantes;
+    }
+*/
+    public function dameArrayParticipantesNoSorteados(LoggerInterface $logger)
+    {
+        //$logger=$this->get('logger');
+        try 
+        {   
+           // $em1=$this->$em->getDoctrine()->getManager();
+            $participante_repo=$em1->getRepository("AppBundle:Participante");
+            $participantes= $participante_repo->findAll();
+            $participantesNoSorteados= new ArrayCollection();
+            foreach ($participantes as $participante) 
+            {
+                if (is_null($participamte->getIdSorteo()))
+                    $participantesNoSorteados[]=$participante;
+            }
+        } catch (Exception $e) {
+             $idParticipantes=NULL;
+            $logger.error('error en dameArrayParticipantesNoSorteados: '.$e->getMessage());
+        }
     }
 
 }   

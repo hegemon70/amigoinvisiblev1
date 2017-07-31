@@ -1,5 +1,6 @@
 AppBundle\Entity\Sesion:
     type: entity
+    repositoryClass: AppBundle\Repository\SesionRepository
     table: sesion
     indexes:
         id_sorteo:

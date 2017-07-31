@@ -5,6 +5,7 @@ namespace AppBundle\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManager;
 use Psr\Log\LoggerInterface;
 
 class DefaultController extends Controller
@@ -15,31 +16,36 @@ class DefaultController extends Controller
     public function indexAction(Request $request)
     {
          $reset=false;
-
-         $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
-        if($reset)//para eliminar la sesion
-            $this->get('session')->invalidate();
-
-        
         $logger=$this->get('logger');
-        $logger->info('intentando recoger var inicial');
-        //comprobando sesion
-        $inicial=$this->get('session')->get('inicial')?true:false;
-
         $helpers = $this->get('app.helpers');
-        if (! $helpers->existeSesionActualGuardada())//es sesion nueva
+         $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
+        $participantes=$helpers->dameArrayParticipantesNoSorteados($logger);
+        if (count($participantes)==0)
         {
-            
+            for ($i=0; $i < $numPart; $i++) 
+            {
+                 $participante = new Participante();
+                 $participantes[]=$participante;
+            }  
+        }
+        else
+        { 
+            $contador=count($participantes);//participantes no vacios
+            if (count($participantes) < $numPart)//hay menos de 10 
+            {
+                for($i=count($participantes); $i < $numPart; $i++)
+                {
+                    $participante = new Participante();
+                     $participantes[]=$participante;
+                }
+            }
         }
 
-
-
-        $logger->info(' '.$helpers->hola());
-        $saludo=$helpers->hola();
-
         return $this->render('default/index.html.twig',
-                        array("saludo"=>$saludo,
-                        )); 
+                        array("participantes"=>$participantes,
+                                 "contador"=>$contador,
+                                 "numpart"=>$numPart,
+                                 "recuperado"=>false)); 
       
     }
 }

@@ -1,5 +1,6 @@
 AppBundle\Entity\Sorteo:
     type: entity
+    repositoryClass: AppBundle\Repository\SorteoRepository
     table: sorteo
     id:
         id:

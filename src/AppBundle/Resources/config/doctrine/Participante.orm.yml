@@ -1,5 +1,6 @@
 AppBundle\Entity\Participante:
     type: entity
+    repositoryClass: AppBundle\Repository\ParticipanteRepository
     table: participante
     indexes:
         sorteo:
