@@ -22,7 +22,7 @@ class ParticipanteType extends AbstractType
         $builder->add('nombre',TextType::class,array('attr' => array('class'=>'form-control','placeholder'=>'Nombre')))
                 ->add('correo',TextType::class,array('attr' => array('class'=>'form-control','placeholder'=>'email')))
                 ->add('asignado',HiddenType::class)
-                ->add('sorteo',HiddenType::class)
+                ->add('idSorteo',HiddenType::class)
                 ->add('save', SubmitType::class, array('label'=> 'Guerdar','attr'=>array('class'=>'btn btn-default')))
                 -> add('cancel', SubmitType::class, array('label'=>'Cnacelar','attr'=>array('formnovalidate'=>'formnovalidate','class'=>'btn btn-default')))
                 ;
@@ -34,7 +34,7 @@ class ParticipanteType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\participante'
+            'data_class' => 'AppBundle\Entity\Participante'
         ));
     }
 

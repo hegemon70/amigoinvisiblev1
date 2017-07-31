@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Sorteo; 
 /**
  * Participante
  */
@@ -122,7 +123,7 @@ class Participante
      *
      * @return Participante
      */
-    public function setIdSorteo(\AppBundle\Entity\Sorteo $idSorteo = null)
+    public function setIdSorteo( Sorteo $idSorteo = null)
     {
         $this->idSorteo = $idSorteo;
 

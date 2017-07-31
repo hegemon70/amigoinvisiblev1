@@ -82,18 +82,33 @@ class Helpers {
         try 
         {   
            // $em1=$this->$em->getDoctrine()->getManager();
-            $participante_repo=$em1->getRepository("AppBundle:Participante");
+            $participante_repo=$this->em->getRepository("AppBundle:Participante");
             $participantes= $participante_repo->findAll();
             $participantesNoSorteados= new ArrayCollection();
             foreach ($participantes as $participante) 
             {
-                if (is_null($participamte->getIdSorteo()))
+                if (is_null($participante->getIdSorteo()))
                     $participantesNoSorteados[]=$participante;
             }
         } catch (Exception $e) {
              $idParticipantes=NULL;
             $logger.error('error en dameArrayParticipantesNoSorteados: '.$e->getMessage());
         }
+    }
+
+    public function guardaParticipante(Participante $participante)
+    {
+        $status=null;
+        try 
+        {
+                    $this->em->persist($participante);
+            $status=$this->em->flush();
+        } 
+        catch (Exception $e) 
+        {
+            $logger->error('error al crear nuevo participante: '.$e->getMessage());
+        }
+        return $status;              
     }
 
 }   

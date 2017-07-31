@@ -1,3 +1,4 @@
+{# app\Resources\views\default\index.html.twig #}
 {% extends 'base.html.twig' %}
 
 {% block body %}
@@ -35,7 +36,7 @@
                         <td>{{ participante.sorteo }}</td> #}
                         {% if contador >= pos %}
                             <td><a href="{{ path('homepage_modificar',{'id':participante.id}) }}">modificar</a> </td>
-                            <td><a href="{{ path('homepage_borrar',{'id':participante.id}) }}">borrar</a> </td>
+                  
                         {% else %}
                         <td><a href="{{ path('homepage_nueva') }}">nuevo </a> 
                         </td>
