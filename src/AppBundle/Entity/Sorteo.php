@@ -2,6 +2,11 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Sorteo;
+use AppBundle\Entity\Participante; 
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * Sorteo
  */
@@ -27,6 +32,13 @@ class Sorteo
      */
     private $asunto;
 
+
+    protected $participante;
+
+    public function __construct()
+    {
+        $this->participante = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -109,6 +121,30 @@ class Sorteo
     {
         return $this->asunto;
     }
+
+    /**
+     * Set participante
+     *
+     * @param Participante $participante
+     *
+     * @return Sorteo
+     */
+     public function setParticipante(Participante $participante)
+    {
+        $this->participante[]=$participante;
+        return $this;
+    }
+
+    /**
+     * Get participantes
+     *
+     * @return Participente
+     */
+    public function getParticipantes()
+    {
+        return $this->participante;
+    }
+
 
          //Metodo MAGICO creado para devolver el nombre 
     public function __toString() {

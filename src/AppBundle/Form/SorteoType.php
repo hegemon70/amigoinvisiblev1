@@ -11,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use AppBundle\Entity\Sorteo;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use AppBundle\Form\ParticipanteType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class SorteoType extends AbstractType
@@ -46,12 +47,6 @@ class SorteoType extends AbstractType
     {
         return 'appbundle_sorteo';
     }
-//https://github.com/javiereguiluz/EasyAdminBundle/issues/1567
-    /**
-    *@return string
-    */
-    public function getName()
-    {
-        return 
-    }
+
+    
 }

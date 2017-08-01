@@ -39,7 +39,7 @@ AppBundle\Entity\Participante:
             cascade: {  }
             fetch: LAZY
             mappedBy: null
-            inversedBy: null
+            inversedBy: participante
             joinColumns:
                 id_sorteo:
                     referencedColumnName: id

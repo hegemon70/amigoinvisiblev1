@@ -6,15 +6,15 @@
         
    {{ form_start(form) }}
  
-    {{ form_row(form.mensaje) }}
-    {{ form_row(form.asunto) }}
+    {{ form_widget(form.asunto) }}
+    {{ form_widget(form.mensaje) }}
 
 
-    <h3>Tags</h3>
-    <ul class="tags">
+    <h3>Participantes</h3>
+    <ul class="participante">
         {# iterate over each existing tag and render its only field: name #}
         {% for participante in form.participantes %}
-            <li>{{ form_row(participante.nombre) }}</li>
+            <li>{{ form_widget(participante.nombre) }}</li>
         {% endfor %}
     </ul>
 {{ form_end(form) }}

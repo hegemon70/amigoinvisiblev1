@@ -2,7 +2,9 @@
 
 namespace AppBundle\Entity;
 
-use AppBundle\Entity\Sorteo; 
+use AppBundle\Entity\Sorteo;
+use AppBundle\Entity\Participante;
+
 /**
  * Participante
  */
@@ -35,6 +37,7 @@ class Participante
      * @var \AppBundle\Entity\Sorteo
      */
     private $idSorteo;
+
 
 
     /**
@@ -142,4 +145,17 @@ class Participante
     {
         return $this->idSorteo;
     }
+
+   
+      //Metodo MAGICO creado para devolver el nombre 
+    public function __toString() {
+    ;
+        return $this->nombre;
+    }
+
+    
+
 }
+
+
+

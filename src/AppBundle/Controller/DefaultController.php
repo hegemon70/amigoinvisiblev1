@@ -10,6 +10,7 @@ use AppBundle\Entity\Participante;
 use AppBundle\Entity\Sesion;
 use AppBundle\Entity\Sorteo;
 use AppBundle\Form\ParticipanteType;
+use AppBundle\Form\SorteoType;
 use Psr\Log\LoggerInterface;
 
 class DefaultController extends Controller

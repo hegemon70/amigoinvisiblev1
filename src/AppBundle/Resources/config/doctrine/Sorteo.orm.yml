@@ -30,4 +30,9 @@ AppBundle\Entity\Sorteo:
             length: 255
             options:
                 fixed: false
+    oneToMany:
+        participante:
+            targetEntity: Participante
+            mappedBy: idpar
+            cascade: ["persist"]
     lifecycleCallbacks: {  }
