@@ -1,5 +1,5 @@
 <?php
-
+//AppBundle\Controller\DefaultController.php
 namespace AppBundle\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -14,53 +14,31 @@ use Psr\Log\LoggerInterface;
 
 class DefaultController extends Controller
 {
+    
     /**
      * @Route("/", name="homepage")
      */
     public function indexAction(Request $request)
     {
         $limitParticipantes=254;
-        $limitParticipantesPorPagina=10;
-        $numPart=$limitParticipantesPorPagina;
-        $contador=0;
+        //$limitParticipantesPorPagina=10;
+        
+
         $reset=false;
 
         $logger=$this->get('logger');
         $helpers = $this->get('app.helpers');
          $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
-        //$participantes=$helpers->dameArrayParticipantesNoSorteados($logger);
-         $em = $this->getDoctrine()->getManager();
-            $participante_rep=$em->getRepository("AppBundle:Participante");
-            $participantes=$participante_rep->findBySinSorteo();
+  
+         
 
-        if (count($participantes)==0)
-        {
-            for ($i=0; $i < $numPart; $i++) 
-            {
-                 $participante = new Participante();
-                 $participantes[]=$participante;
-            }  
-        }
-        else
-        { 
-            $contador=count($participantes);//participantes no vacios
-            if (count($participantes) < $numPart)//hay menos de 10 
-            {
-                for($i=count($participantes); $i < $numPart; $i++)
-                {
-                    $participante = new Participante();
-                     $participantes[]=$participante;
-                }
-            }
-        }
+       
 
-        return $this->render('default/index.html.twig',
-                        array("participantes"=>$participantes,
-                                 "contador"=>$contador,
-                                 "numpart"=>$numPart,
-                                 "recuperado"=>false)); 
+        return $this->render('default/index.html.twig'); 
       
     }
+
+ 
 
      /**
      * @Route("/nueva", name="homepage_nueva")
@@ -87,7 +65,7 @@ class DefaultController extends Controller
                  $participante=$form->getData();
                  $helpers = $this->get('app.helpers');
                  $exito=$helpers->guardaParticipante($participante);
-                 if ($exito)
+                 if (is_null($exito))
                     $logger->info('Tus cambios han sido salvados!');
             }
             return $this->redirectToRoute('homepage'); 
@@ -106,7 +84,7 @@ class DefaultController extends Controller
      public function modificarAction(Request $request,$id)
     {
 
-        
+        $logger=$this->get('logger');
         try 
         {
             $em = $this->getDoctrine()->getManager();
@@ -127,9 +105,9 @@ class DefaultController extends Controller
                 try 
                 {
 
-                    $participanteAct->setNombre($form->get("nombre")->getData());
-                     $participanteAct->setCorreo($form->get("correo")->getData());
-                    $em->persist($participanteAct);
+                    $participante->setNombre($form->get("nombre")->getData());
+                     $participante->setCorreo($form->get("correo")->getData());
+                    $em->persist($participante);
                     $flush=$em->flush();
                     if($flush==null)
                         $logger->info('participante '.$id.' modificado');
@@ -146,4 +124,32 @@ class DefaultController extends Controller
          return $this->render('default/participante/modificar.html.twig',
                          array('form'=>$form->createView()));        
     }
+
+    /**
+     * @Route("/borrar/{id}", name="homepage_borrar")
+     */
+     public function borrarAction($id)
+    {
+        $logger=$this->get('Logger');
+        
+        // Creo un ENTITY MANAGER
+        try 
+        {
+            $em = $this->getDoctrine()->getManager();
+            $participante_rep=$em->getRepository("AppBundle:Participante");
+            $participante=$participante_rep->findOneById($id);
+            if (!is_null($participante))//si se ha encontrado el $id participante
+            {
+                $em->remove($participante);
+                $flush=$em->flush();
+                $logger->info('participante '.$id.' borrado');
+            }
+        } 
+        catch (Exception $e) 
+        {
+            $logger->error('fallo al borrar: '.$e->getMessage());
+        }
+        return $this->redirectToRoute('homepage');
+    }
+
 }

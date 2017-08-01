@@ -3,7 +3,24 @@
 
 {% block body %}
         
-    <h1>{{titulo}}</h1>       
+   <h2>Modificar Participante</h2>
+{#
+{% if (status !=null) %}
+    <h3>{{status}}</h3>
+{% endif %}
+#}
+{{ form_start(form) }}
+{{ form_errors(form)}}
+{{ form_widget(form.nombre)}} <p/>
+
+{{ form_widget(form.correo)}} <p/>
+{{ form_widget(form.idSorteo)}}
+{{ form_widget(form.asignado)}}
+{{ form_row(form._token) }}
+{{ form_widget(form.save, {'label':'Salvar participante'}) }}
+{{ form_widget(form.cancel, {'label':'Cancelar'}) }}
+{{ form_end(form,{'render_rest':false}) }}
+    
 
  
                        

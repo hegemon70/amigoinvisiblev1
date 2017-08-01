@@ -1,0 +1,51 @@
+{# app\Resources\views\default\participante\nuevo.html.twig #}
+{% extends 'default/index.html.twig' %}
+
+{% block body %}
+	{{dump(contador)}}
+{% set pos = 0 %}
+ {% for participante in participantes %}
+	<tr>
+	    {% set pos = pos + 1 %}
+	    <td>{{ pos }}</td>
+	    <td>{{ participante.nombre }}</td>
+	    <td>{{ participante.correo }}</td>
+	 {#   <td>{{ participante.asignado }}</td>
+	    <td>{{ participante.sorteo }}</td> #}
+	    {% if contador >= pos %}
+	        <td><a href="{{ path('homepage_modificar',{'id':participante.id}) }}">modificar</a> </td>
+	        <td><a href="{{ path('homepage_borrar',{'id':participante.id}) }}">borrar</a>
+
+
+	    {% else %}
+	    <td><a href="{{ path('homepage_nueva') }}">nuevo </a>
+	    <td><a href="#"></a></td>
+	    </td>
+
+	    </td>
+	    {% endif %}
+	</tr>
+{% endfor %}
+ {% if recuperado %}
+            <tr>
+                <td>
+                    <a href="{{ path('homepage_sorteo',{'id':idSorteo}) }}">Editar Correo</a>
+                </td>
+            </tr>
+            {% else %}{#recuperado = false #}
+                {% if contador > 2 %}{# si no hay mas de dos participantes#}
+                     <tr>
+                            <td><a href="{{ path('sorteo_modificar') }} "> Sortear </a></td> 
+                       {% if pos >= numpart %}
+                      
+                            <td><a href="{{ path('homepage_nueva') }}">Añadir mas amigos </a> </td>
+                      
+                        {%  endif  %}
+                    </tr>
+                {% endif %}
+            {% endif %} {#fin recuperado#}
+                </tbody>
+                </table>
+               
+
+{% endblock %}
