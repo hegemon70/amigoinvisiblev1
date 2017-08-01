@@ -1,0 +1,29 @@
+{# app\Resources\views\default\index.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+                {#   
+                {% if app.session.flashbag().get('min3') is defined %}
+                    {% for message in app.session.flashbag().get('min3') %}
+                        <div class="alert alert-error">{{ message }}</div>   
+                    {% endfor %}
+                {% endif %}
+                #} 
+                <div><h1>SORTEO DEL AMIGO INVISIBLE</h1></div>
+                <div><strong>¿Alguien no ha recibido su e-mail?</strong><br/>
+                    Puedes <a href="{{ path('recuperar') }}">recuperar el sorteo </a> 
+                </div>
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>nombre</th>
+                            <th>correo</th>
+                        {#    <th>asignado</th>
+                            <th>sorteo</th> #}
+                        </tr>
+                    </thead>
+                    <tbody>
+                  {{ render(controller('AppBundle:Participantes:nueva')) }}
+    {# { 'max': constant('NUM_PART', participante) } #}
+{% endblock %}

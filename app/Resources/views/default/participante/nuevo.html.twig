@@ -3,21 +3,29 @@
 
 {% block body %}
 
-<h2>Nuevo Participante</h2>
+
 {% if (status !=null) %}
     <h3>{{status}}</h3>
 {% endif %}
 {{ form_start(form) }}
 {{ form_errors(form)}}
-{{ form_widget(form.nombre)}} <p/>
+<tr>
+	<td>
+		{{ form_widget(form.nombre)}} 
+	</td>
+	<td>
+		{{ form_widget(form.correo)}} 
+	</td>
+	<td>
+		{{ form_widget(form.save, {'label':'Modificar'}) }}
+		{{ form_widget(form.cancel, {'label':'Borrar'}) }}
+	</td>
+</tr>
 
-{{ form_widget(form.correo)}} <p/>
+
+
 {{ form_row(form._token) }}
-{{ form_widget(form.save, {'label':'Insertar participante'}) }}
-{{ form_widget(form.cancel, {'label':'Cancelar'}) }}
+
 {{ form_end(form,{'render_rest':false}) }}
-
-<a href="{{ path('homepage') }}">Cancelar</a>
-
 
 {% endblock %}

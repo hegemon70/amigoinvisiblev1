@@ -9,7 +9,7 @@ use AppBundle\Entity\Sorteo;
 class Participante
 {
 
-    const NUM_PART=10;
+    const NUM_PART=6;
 
     /**
      * @var integer

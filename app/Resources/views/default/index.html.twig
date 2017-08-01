@@ -2,6 +2,8 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+                {% set pos = 0 %}
                 {#   
                 {% if app.session.flashbag().get('min3') is defined %}
                     {% for message in app.session.flashbag().get('min3') %}
@@ -16,7 +18,6 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Id</th>
                             <th>nombre</th>
                             <th>correo</th>
                         {#    <th>asignado</th>
@@ -24,6 +25,35 @@
                         </tr>
                     </thead>
                     <tbody>
-                  {{ render(controller('AppBundle:Participantes:listar')) }}
-    {# { 'max': constant('NUM_PART', participante) } #}
+                   {% for participante in participantes %}
+                    {{ render(controller('AppBundle:Participantes:nueva')) }}
+                   {% endfor %}
+
+            {% if recuperado %}
+            <tr>
+                <td>
+                    <a href="{{ path('homepage_sorteo',{'id':idSorteo}) }}">Editar Correo</a>
+                </td>
+            </tr>
+            {% else %}{#recuperado = false #}
+                {% if contador > 2 %}{# si no hay mas de dos participantes#}
+                     <tr>
+                            <td><a href="{{ path('sorteo_modificar') }} "> Sortear </a></td> 
+                       {% if pos >= numpart %}
+                      
+                            <td><a href="{{ path('homepage_nueva') }}">Añadir mas amigos </a> </td>
+                      
+                        {%  endif  %}
+                    </tr>
+                {% endif %}
+            {% endif %} {#fin recuperado#}
+                </tbody>
+                </table>
+               
+
 {% endblock %}
+
+
+
+
+

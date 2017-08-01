@@ -65,4 +65,42 @@ class ParticipantesController extends Controller
     }
 
 
+    /**
+     * @Route("/nueva", name="participantes_nueva")
+     */
+    public function nuevaAction(Request $request)
+    {
+    	$status=null;
+        $data=null;
+        $logger=$this->get('logger');
+        $participante=new Participante();
+        
+
+        $form=$this->createForm(ParticipanteType::class,$participante);
+
+            $em = $this->getDoctrine()->getManager();
+            $participante_rep=$em->getRepository("AppBundle:Participante");
+            $participantes=$participante_rep->findBySinSorteo();
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            if($form->get('save')->isClicked())
+            {
+                 $participante=$form->getData();
+                 $helpers = $this->get('app.helpers');
+                 $exito=$helpers->guardaParticipante($participante);
+                 if (is_null($exito))
+                    $logger->info('Tus cambios han sido salvados!');
+            }
+            return $this->redirectToRoute('homepage'); 
+        }
+
+
+         return $this->render('default/participante/nuevo.html.twig',array( 'form'=>$form->createView(),
+
+                    'status'=> $status
+                ));
+    }
+
 }
