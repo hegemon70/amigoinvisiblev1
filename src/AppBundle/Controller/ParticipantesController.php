@@ -68,20 +68,23 @@ class ParticipantesController extends Controller
     /**
      * @Route("/nueva", name="participantes_nueva")
      */
-    public function nuevaAction(Request $request)
+    public function nuevaAction($kk)
     {
     	$status=null;
         $data=null;
         $logger=$this->get('logger');
-        $participante=new Participante();
-        
-
+        var_dump($kk);
+        $sinDatos=(is_null($kk));//si no tiene nombre
+        //if($sinDatos)//si participante vacio
+        //    $participante=new Participante();
+        $id=111;
         $form=$this->createForm(ParticipanteType::class,$participante);
-
-            $em = $this->getDoctrine()->getManager();
-            $participante_rep=$em->getRepository("AppBundle:Participante");
-            $participantes=$participante_rep->findBySinSorteo();
-
+            if(!$sinDatos)//con datos
+            {
+                $em = $this->getDoctrine()->getManager();
+                $participante_rep=$em->getRepository("AppBundle:Participante");
+                $participantes=$participante_rep->findById($participante.getId());
+            }
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) 
         {

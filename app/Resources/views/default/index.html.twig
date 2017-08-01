@@ -2,7 +2,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-
+{{ dump(participantes)}}
                 {% set pos = 0 %}
                 {#   
                 {% if app.session.flashbag().get('min3') is defined %}
@@ -26,7 +26,10 @@
                     </thead>
                     <tbody>
                    {% for participante in participantes %}
-                    {{ render(controller('AppBundle:Participantes:nueva')) }}
+                    {{ render(controller('AppBundle:Participantes:nueva',
+                        { 'kk': 3 }
+                    )) }}
+                    
                    {% endfor %}
 
             {% if recuperado %}
@@ -49,7 +52,15 @@
             {% endif %} {#fin recuperado#}
                 </tbody>
                 </table>
-               
+       <div> 
+            {{ form_start(form) }}
+            {{ form_errors(form)}}   
+            {{ form_row(form._token) }}
+            {{ form_widget(form.save, {'label':'Crea Sorteo'}) }}  
+            {{ form_end(form,{'render_rest':false}) }}
+
+       </div>         
+      
 
 {% endblock %}
 
