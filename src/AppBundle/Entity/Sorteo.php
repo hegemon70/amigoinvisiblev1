@@ -109,4 +109,10 @@ class Sorteo
     {
         return $this->asunto;
     }
+
+         //Metodo MAGICO creado para devolver el nombre 
+    public function __toString() {
+        $format='%.0u';
+        return sprintf($format,$this->codigoSorteo);
+    }
 }

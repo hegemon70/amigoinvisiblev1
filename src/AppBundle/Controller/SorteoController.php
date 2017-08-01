@@ -16,10 +16,18 @@ class SorteoController extends Controller
      */
     public function sorteoAction($id)
     {
+    	$sorteo =new Sorteo();
+    	$form=$this->createForm(SorteoType::class,$sorteo);
+    	$form->handleRequest($request);
 
-        $titulo="view Sorteo";
+        if ($form->isSubmitted() && $form->isValid()) {
+
+        }
+
+        
         return $this->render('default/Sorteo.html.twig',
-                         array('titulo'=>$titulo));
+                         array('form'=>$form->createView()
+                         	));
        
     }
 }

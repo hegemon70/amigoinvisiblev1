@@ -9,8 +9,9 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
-
+use AppBundle\Entity\Sorteo;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 
 class SorteoType extends AbstractType
 {
@@ -23,6 +24,7 @@ class SorteoType extends AbstractType
         $builder->add('codigoSorteo',TextType::class,array('attr' => array('class'=>'form-control')))
                 ->add('mensaje',TextareaType::class,array('attr' => array('class'=>'form-control','placeholder'=>'Escribe aqui las condiciones del sorteo, el precio maximo del regalo ,la fecha limite')))
                 ->add('asunto',TextType::class,array('attr' => array('class'=>'form-control focusedInput','placeholder'=>'escribe aqui un titulo o asunto para el Sorteo del Amigo Invisible')))
+                ->add('participantes', CollectionType::class,array('entry_type'=>ParticipanteType::class))
                 ->add('save', SubmitType::class, array('label' => 'Guardar', 'attr'=>array('class'=>'btn btn-default')))
                  -> add('cancel', SubmitType::class, array('label'=>'Cancelar','attr'=>array('formnovalidate'=>'formnovalidate','class'=>'btn btn-default')));
     }
@@ -33,7 +35,7 @@ class SorteoType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'AppBundle\Entity\Sorteo'
+            'data_class' => Sorteo::class
         ));
     }
 
@@ -44,6 +46,12 @@ class SorteoType extends AbstractType
     {
         return 'appbundle_sorteo';
     }
-
-
+//https://github.com/javiereguiluz/EasyAdminBundle/issues/1567
+    /**
+    *@return string
+    */
+    public function getName()
+    {
+        return 
+    }
 }

@@ -4,7 +4,21 @@
 {% block body %}
         
         
-    <h1>{{titulo}}</h1>
+   {{ form_start(form) }}
+ 
+    {{ form_row(form.mensaje) }}
+    {{ form_row(form.asunto) }}
+
+
+    <h3>Tags</h3>
+    <ul class="tags">
+        {# iterate over each existing tag and render its only field: name #}
+        {% for participante in form.participantes %}
+            <li>{{ form_row(participante.nombre) }}</li>
+        {% endfor %}
+    </ul>
+{{ form_end(form) }}
+
  
                        
 {% endblock %}

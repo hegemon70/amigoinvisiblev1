@@ -20,51 +20,18 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $limitParticipantes=254;
-        //$limitParticipantesPorPagina=10;
+        $sorteo =new Sorteo();
+        $form=$this->createForm(SorteoType::class,$sorteo);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+        }
+
         
-
-        $reset=false;
-
-        $logger=$this->get('logger');
-        $helpers = $this->get('app.helpers');
-         $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
-
-        $contador=0;
-        $numPart=Participante::NUM_PART;
-        $em = $this->getDoctrine()->getManager();
-        $participante_rep=$em->getRepository("AppBundle:Participante");
-        $participantes=$participante_rep->findBySinSorteo();
-        if (count($participantes)==0)
-        {
-            for ($i=0; $i < $numPart; $i++) 
-            {
-                 $participante = new Participante();
-                 $participantes[]=$participante;
-            }  
-        }
-        else
-        { 
-            $contador=count($participantes);//participantes no vacios
-            if ($contador < $numPart)//hay menos de 10 
-            {
-                for($i=$contador; $i < $numPart; $i++)
-                {
-                    $participante = new Participante();
-                     $participantes[]=$participante;
-                }
-            }
-        }
-         $formato='el num de participantes no vacios es [contador]: %.0f';
-        $logger->info(sprintf($formato,$contador));
-
-        return $this->render('default/index.html.twig',
-            array(  "participantes"=>$participantes,
-                        "contador"=>$contador,
-                        "numpart"=>$numPart,
-                        "recuperado"=>false
-                )           
-                            ); 
+        return $this->render('default/Sorteo.html.twig',
+                         array('form'=>$form->createView()
+                            ));
       
     }
 
