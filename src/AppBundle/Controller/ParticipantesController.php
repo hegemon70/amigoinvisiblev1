@@ -68,23 +68,24 @@ class ParticipantesController extends Controller
     /**
      * @Route("/nueva", name="participantes_nueva")
      */
-    public function nuevaAction($kk)
+    public function nuevaAction(Participante $participante)
     {
     	$status=null;
         $data=null;
         $logger=$this->get('logger');
-        var_dump($kk);
-        $sinDatos=(is_null($kk));//si no tiene nombre
+        
+       // $sinDatos=(is_null($participante));//si no tiene nombre
         //if($sinDatos)//si participante vacio
         //    $participante=new Participante();
-        $id=111;
         $form=$this->createForm(ParticipanteType::class,$participante);
+           /*
             if(!$sinDatos)//con datos
             {
                 $em = $this->getDoctrine()->getManager();
                 $participante_rep=$em->getRepository("AppBundle:Participante");
                 $participantes=$participante_rep->findById($participante.getId());
-            }
+            }*/
+        /*
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) 
         {
@@ -98,7 +99,7 @@ class ParticipantesController extends Controller
             }
             return $this->redirectToRoute('homepage'); 
         }
-
+*/
 
          return $this->render('default/participante/nuevo.html.twig',array( 'form'=>$form->createView(),
 

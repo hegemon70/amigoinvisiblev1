@@ -2,6 +2,7 @@
 
 namespace AppBundle\Repository;
 use \Doctrine\ORM\EntityRepository;
+//use AppBundle\Entity\Participante;
 /**
  * ParticipanteRepository
  *
@@ -10,7 +11,7 @@ use \Doctrine\ORM\EntityRepository;
  */
 class ParticipanteRepository extends EntityRepository
 {
-	public function findBySinSorteo()
+	public function findBySinSorteo1()
 	{
         $qb = $this->createQueryBuilder('p');
         $qb->where('p.idSorteo IS NULL');
@@ -18,6 +19,20 @@ class ParticipanteRepository extends EntityRepository
         $idParticipantes = $qb->getQuery()->getArrayResult();
        
         return $idParticipantes;
+	}
+
+	public function findBySinSorteo()
+	{
+       return $this->getEntityManager()
+       ->createQuery('SELECT p FROM AppBundle:Participante p WHERE ( p.idSorteo IS NULL)')
+       ->getResult();
+       //createQuery('SELECT P FROM AppBundle::Participante')->getResult();
+       // $participantes = $this->getManager()->find('idSorteo', ISNULL);
+        //$qb->where('p.idSorteo IS NULL');
+
+       // $idParticipantes = $qb->getQuery()->getArrayResult();
+       
+     
 	}
 
 }

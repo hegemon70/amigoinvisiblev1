@@ -2,7 +2,6 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-{{ dump(participantes)}}
                 {% set pos = 0 %}
                 {#   
                 {% if app.session.flashbag().get('min3') is defined %}
@@ -26,9 +25,13 @@
                     </thead>
                     <tbody>
                    {% for participante in participantes %}
-                    {{ render(controller('AppBundle:Participantes:nueva',
-                        { 'kk': 3 }
-                    )) }}
+                    <tr>
+                        <td>
+                            {{ render(controller('AppBundle:Participantes:nueva',{'participante': participante}                    )) }}
+
+                        </td>
+                    </tr>
+                    
                     
                    {% endfor %}
 

@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Collections\ArrayCollection;
 use AppBundle\Entity\Participante;
 use AppBundle\Entity\Sesion;
 use AppBundle\Entity\Sorteo;
@@ -25,6 +26,7 @@ class DefaultController extends Controller
         $helpers = $this->get('app.helpers');
 
         $sorteo =new Sorteo();
+        $arrColParticipantes=new ArrayCollection(); 
         $form=$this->createForm(SorteoType::class,$sorteo);
 
 
@@ -32,11 +34,18 @@ class DefaultController extends Controller
 
         $contador=0;
         $numPart=Participante::NUM_PART;// NUM_PART en entity Participante
-
+        
         //CONSULTO LOS PARTICIPANTES VACIOS
         $em = $this->getDoctrine()->getManager();
         $participante_rep=$em->getRepository("AppBundle:Participante");
         $participantes=$participante_rep->findBySinSorteo();
+        
+        foreach ($participantes as $participante) {
+             $logger->info('el tipo de $participante es un : '.gettype($participante));
+              $logger->info(' y tiene de nombre: '.$participante->getNombre());
+        }
+      
+
         if (count($participantes)==0)
         {
             for ($i=0; $i < $numPart; $i++) 
@@ -47,13 +56,13 @@ class DefaultController extends Controller
         }
         else
         { 
-            $contador=count($participantes);//participantes no vacios
+            $contador=count($arrColParticipantes);//participantes no vacios
             if ($contador < $numPart)//hay menos de NUM_PART 
             {
                 for($i=$contador; $i < $numPart; $i++)
                 {
                     $participante = new Participante();
-                     $participantes[]=$participante;
+                    $participantes[]=$participante;
                 }
             }
         }
@@ -61,7 +70,7 @@ class DefaultController extends Controller
         $formato='el num de participantes no vacios es [contador]: %.0f';
         $logger->info(sprintf($formato,$contador));
 
-       
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -71,7 +80,8 @@ class DefaultController extends Controller
 
         
          return $this->render('default/index.html.twig',
-            array( 'form'=>$form->createView(),"participantes"=>$participantes,
+            array( 'form'=>$form->createView(),
+                        "participantes"=>$participantes,
                         "contador"=>$contador,
                         "numpart"=>$numPart,
                         "recuperado"=>false
