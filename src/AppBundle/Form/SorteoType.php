@@ -25,7 +25,11 @@ class SorteoType extends AbstractType
         $builder->add('codigoSorteo',TextType::class,array('attr' => array('class'=>'form-control')))
                 ->add('mensaje',TextareaType::class,array('attr' => array('class'=>'form-control','placeholder'=>'Escribe aqui las condiciones del sorteo, el precio maximo del regalo ,la fecha limite')))
                 ->add('asunto',TextType::class,array('attr' => array('class'=>'form-control focusedInput','placeholder'=>'escribe aqui un titulo o asunto para el Sorteo del Amigo Invisible')))
-                ->add('participantes', CollectionType::class,array('entry_type'=>ParticipanteType::class))
+
+                ->add('participantes', CollectionType::class,array('entry_type'=>ParticipanteType::class´,
+                    'block_name' => 'lista_participantes'
+                    ))
+
                 ->add('save', SubmitType::class, array('label' => 'Guardar', 'attr'=>array('class'=>'btn btn-default')))
                  -> add('cancel', SubmitType::class, array('label'=>'Cancelar','attr'=>array('formnovalidate'=>'formnovalidate','class'=>'btn btn-default')));
     }

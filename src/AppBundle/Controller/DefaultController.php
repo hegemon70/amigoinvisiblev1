@@ -77,6 +77,8 @@ class DefaultController extends Controller
             //TODO TRATAMOS LA PETICION
             if($form->get('save')->isClicked())
             {
+
+                //https://github.com/symfony/symfony-docs/issues/6056 HeahDude commented on 15 May 2016
                 foreach ($form->get('participantes') as $participante)
                 {
                     $participantes[]=$participante;
