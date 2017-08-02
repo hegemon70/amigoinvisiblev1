@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use AppBundle\Entity\Participante;
 use AppBundle\Entity\Sesion;
 use AppBundle\Entity\Sorteo;
@@ -24,12 +25,18 @@ class DefaultController extends Controller
     {
         $logger=$this->get('logger');
         $helpers = $this->get('app.helpers');
+        $localizacion=$helpers->dameNombreActionActual($request);
 
         $sorteo =new Sorteo();
-        $arrColParticipantes=new ArrayCollection(); 
+        $codigo=$helpers->generoNumeroSerieAleatorio();
+        $sorteo->setCodigoSorteo($codigo);
+        //$arrColParticipantes=new ArrayCollection(); 
         $form=$this->createForm(SorteoType::class,$sorteo);
+         //https://github.com/symfony/symfony-docs/issues/6056 HeahDude commented on 15 May 2016
 
-
+        //$form = $this->createFormBuilder(SorteoType::class)
+        //        ->add('save', SubmitType::class)
+        //       ->getForm();
         $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
 
         $contador=0;
@@ -56,7 +63,7 @@ class DefaultController extends Controller
         }
         else
         { 
-            $contador=count($arrColParticipantes);//participantes no vacios
+            $contador=count($participantes);//participantes no vacios
             if ($contador < $numPart)//hay menos de NUM_PART 
             {
                 for($i=$contador; $i < $numPart; $i++)
@@ -77,20 +84,9 @@ class DefaultController extends Controller
             //TODO TRATAMOS LA PETICION
             if($form->get('save')->isClicked())
             {
-
-                //https://github.com/symfony/symfony-docs/issues/6056 HeahDude commented on 15 May 2016
-                foreach ($form->get('participantes') as $participante)
-                {
-                    $participantes[]=$participante;
-                }
-                /*
-                $sorteo=$form->getData();
+                $logger->info('hemos clicado en creear Sorteo');
+                $sorteo= $form->getData();
                 $participantes=$sorteo->getParticipantes();
-                var_dump(count($participantes));
-               // return $this->redirectToRoute('homepage_sorteo',array('id'=>$sorteo['id']));
-
-                
-  */
                 if(count($participantes)<3)
                 {
                     $strMin3 = 'Debes de crear al menos 3 participantes';
@@ -98,9 +94,32 @@ class DefaultController extends Controller
                 }
                 else
                 {
-                     var_dump($participantes);
+                   try 
+                   {
+                        $em = $this->getDoctrine()->getManager();
+                        $em->persist($sorteo);
+                        $em->flush();
+                        $logger->warning('Sorteo guardado');
+                    } 
+                    catch (Exception $e) 
+                    {
+                        $logger->error('error en '.$localizacion.' '.$e->getMessage());
+                    }
+
+                    return $this->redirectToRoute('homepage_sorteo',array('id'=>$sorteo->getId()));
+
                 }
 
+  
+
+          
+                
+                
+  
+
+                
+
+              
                 
             }
         }
@@ -111,7 +130,8 @@ class DefaultController extends Controller
                         "participantes"=>$participantes,
                         "contador"=>$contador,
                         "numpart"=>$numPart,
-                        "recuperado"=>false
+                        "recuperado"=>false,
+                        "codigo"=>$codigo
                 )           
                             );
       

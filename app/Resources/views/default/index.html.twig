@@ -2,6 +2,9 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    {{dump(codigo)}}
+    <div> 
+      
                 {% set pos = 0 %}
                    
                 {% if app.session.flashbag().get('min3') is defined %}
@@ -9,7 +12,8 @@
                         <div class="alert alert-error">{{ message }}</div>   
                     {% endfor %}
                 {% endif %}
-                 
+              {{ form_start(form) }}
+                {{ form_errors(form)}}      
                 <div><h1>SORTEO DEL AMIGO INVISIBLE</h1></div>
                 <div><strong>¿Alguien no ha recibido su e-mail?</strong><br/>
                     Puedes <a href="{{ path('recuperar') }}">recuperar el sorteo </a> 
@@ -24,6 +28,7 @@
                         </tr>
                     </thead>
                     <tbody>
+              
                    {% for participante in participantes %}
                     <tr>
                         <td>
@@ -35,31 +40,15 @@
                     
                    {% endfor %}
 
-            {% if recuperado %}
-            <tr>
-                <td>
-                    <a href="{{ path('homepage_sorteo',{'id':idSorteo}) }}">Editar Correo</a>
-                </td>
-            </tr>
-            {% else %}{#recuperado = false #}
-                {% if contador > 2 %}{# si no hay mas de dos participantes#}
-                     <tr>
-                            <td><a href="{{ path('sorteo_modificar') }} "> Sortear </a></td> 
-                       {% if pos >= numpart %}
-                      
-                            <td><a href="{{ path('homepage_nueva') }}">Añadir mas amigos </a> </td>
-                      
-                        {%  endif  %}
-                    </tr>
-                {% endif %}
-            {% endif %} {#fin recuperado#}
+            
                 </tbody>
                 </table>
-       <div> 
-            {{ form_start(form) }}
-            {{ form_errors(form)}}   
+   
+            {{form_row(form.codigoSorteo)}}
             {{ form_row(form._token) }}
+            <div>
             {{ form_widget(form.save, {'label':'Crea Sorteo'}) }}  
+            </div>
             {{ form_end(form,{'render_rest':false}) }}
 
        </div>         
