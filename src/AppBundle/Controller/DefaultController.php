@@ -75,7 +75,32 @@ class DefaultController extends Controller
 
         if ($form->isSubmitted() && $form->isValid()) {
             //TODO TRATAMOS LA PETICION
+            if($form->get('save')->isClicked())
+            {
+                foreach ($form->get('participantes') as $participante)
+                {
+                    $participantes[]=$participante;
+                }
+                /*
+                $sorteo=$form->getData();
+                $participantes=$sorteo->getParticipantes();
+                var_dump(count($participantes));
+               // return $this->redirectToRoute('homepage_sorteo',array('id'=>$sorteo['id']));
 
+                
+  */
+                if(count($participantes)<3)
+                {
+                    $strMin3 = 'Debes de crear al menos 3 participantes';
+                    $this->get('session')->getFlashBag()->add("min3",$strMin3);
+                }
+                else
+                {
+                     var_dump($participantes);
+                }
+
+                
+            }
         }
 
         

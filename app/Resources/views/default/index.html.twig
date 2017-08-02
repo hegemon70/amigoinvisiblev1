@@ -3,13 +3,13 @@
 
 {% block body %}
                 {% set pos = 0 %}
-                {#   
+                   
                 {% if app.session.flashbag().get('min3') is defined %}
                     {% for message in app.session.flashbag().get('min3') %}
                         <div class="alert alert-error">{{ message }}</div>   
                     {% endfor %}
                 {% endif %}
-                #} 
+                 
                 <div><h1>SORTEO DEL AMIGO INVISIBLE</h1></div>
                 <div><strong>¿Alguien no ha recibido su e-mail?</strong><br/>
                     Puedes <a href="{{ path('recuperar') }}">recuperar el sorteo </a> 
