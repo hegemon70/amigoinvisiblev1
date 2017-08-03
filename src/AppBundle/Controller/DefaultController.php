@@ -103,6 +103,7 @@ class DefaultController extends Controller
                 {*/
                    try 
                    {
+                    //https://knpuniversity.com/screencast/new-in-symfony3/form-updates
                         $em = $this->getDoctrine()->getManager();
                         $em->persist($sorteo);
                         $em->flush();
