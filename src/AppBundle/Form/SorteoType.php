@@ -42,8 +42,9 @@ class SorteoType extends AbstractType
                 ->add('participantes', CollectionType::class,
                     array(
                         'entry_type'=>ParticipanteType::class,
+                        'by_reference' => 'false',
                         'block_name' => 'lista_participantes',
-                        'prototype'=>false,
+                        'prototype'=>true,
                         'allow_add'=>true,
                         'allow_delete'=>true,
                         'label'=>'Participantes'

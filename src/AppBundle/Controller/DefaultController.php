@@ -86,10 +86,11 @@ class DefaultController extends Controller
             if($form->get('save')->isClicked())
             {
                 $logger->info('hemos clicado en crear Sorteo');
-                $participantes=$form->get('participantes')->getData();
+                 unset($participantes);//elimino los datos anteriores a la recogida del formulario
                 $sorteo = $form->getData();
-                //$participantes=$sorteo->getParticipantes();
-               // var_dump($sorteo);
+               //https://codereviewvideos.com/course/symfony2-form-collection-tutorial/video/introduction-to-the-symfony-form-collection-field-type
+               /* $participantes=$sorteo->getParticipantes();
+                var_dump($participantes);
                 $intPart=count($participantes);
                 $logger->info('hay '.$intPart.' participantes');
                 if($intPart<3)
@@ -99,22 +100,34 @@ class DefaultController extends Controller
                    $this->addFlash("min3",$strMin3);
                 }
                 else
-                {
+                {*/
                    try 
                    {
                         $em = $this->getDoctrine()->getManager();
                         $em->persist($sorteo);
                         $em->flush();
                         $logger->warning('Sorteo guardado');
+                        $idSorteo=$sorteo->getId();
+                        /*foreach ($participantes as $participante) 
+                        {
+                            if($participante)
+                            $participante->setIdSorteo($sorteo);
+                            $em = $this->getDoctrine()->getManager();
+                            $em->persist($participante);
+                            $em->flush();
+                            
+                            $format='%d';
+                            $logger->warning('Participante '.sprintf($format,$participante->getId()).' del sorteo '.sprintf($format,$idSorteo).' se ha guardado');
+                        }*/
                     } 
                     catch (Exception $e) 
                     {
                         $logger->error('error en '.$localizacion.' '.$e->getMessage());
                     }
 
-                    return $this->redirectToRoute('homepage_sorteo',array('id'=>$sorteo->getId()));
+                    return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
 
-                }
+               // }
           
             }
         }

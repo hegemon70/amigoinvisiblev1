@@ -34,10 +34,11 @@
                     <tbody>
               
                    {% for participante in participantes %}
-                    <tr>
+                        <tr class="participantes" data-prototype="{{ form_widget(form.participantes.vars.prototype)|e('html_attr') }}">
                         <td>
-                            {{ render(controller('AppBundle:Participantes:nueva',{'participante': participante}                    )) }}
 
+                            {{ render(controller('AppBundle:Participantes:nueva',{'participante': participante}                    )) }}
+                            
                         </td>
                     </tr>
                     
