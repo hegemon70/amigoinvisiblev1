@@ -15,20 +15,30 @@ use AppBundle\Form\ParticipanteType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use AppBundle\Form\EventListener\AddEmailFieldListener;
 use AppBundle\Form\EventListener\AddNameFieldListener;
+use Psr\Log\LoggerInterface;
 
 class SorteoType extends AbstractType
 {
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger=$logger;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $this->logger->info('dibujando formulario Sorteo');
+        $logger=$this->logger;
        // $builder->add('codigoSorteo',TextType::class,array('attr' => array('class'=>'form-control','disabled'=>'disabled')))
         $builder->add('codigoSorteo',TextType::class,array('attr' => array('class'=>'form-control')))
                 ->add('mensaje',TextareaType::class,array('attr' => array('class'=>'form-control','placeholder'=>'Escribe aqui las condiciones del sorteo, el precio maximo del regalo ,la fecha limite')))
                 ->add('asunto',TextType::class,array('attr' => array('class'=>'form-control focusedInput','placeholder'=>'escribe aqui un titulo o asunto para el Sorteo del Amigo Invisible')))
-                ->addEventSubscriber(new AddNameFieldListener())
-                ->addEventSubscriber(new AddEmailFieldListener())
+                ->addEventSubscriber(new AddNameFieldListener($logger))
+                ->addEventSubscriber(new AddEmailFieldListener($logger))
                 ->add('participantes', CollectionType::class,
                     array(
                         'entry_type'=>ParticipanteType::class,

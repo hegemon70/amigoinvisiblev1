@@ -85,7 +85,7 @@ class DefaultController extends Controller
             //TODO TRATAMOS LA PETICION
             if($form->get('save')->isClicked())
             {
-                $logger->info('hemos clicado en creear Sorteo');
+                $logger->info('hemos clicado en crear Sorteo');
                 $participantes=$form->get('participantes')->getData();
                 $sorteo = $form->getData();
                 //$participantes=$sorteo->getParticipantes();
