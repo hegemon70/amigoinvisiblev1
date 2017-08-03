@@ -148,8 +148,8 @@ class Participante
 
    
       //Metodo MAGICO creado para devolver el nombre 
-    public function __toString() {
-    ;
+    public function __toString() 
+    {
         return $this->nombre;
     }
 
