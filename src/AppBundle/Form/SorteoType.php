@@ -13,6 +13,8 @@ use AppBundle\Entity\Sorteo;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use AppBundle\Form\ParticipanteType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+use AppBundle\Form\EventListener\AddEmailFieldListener;
+use AppBundle\Form\EventListener\AddNameFieldListener;
 
 class SorteoType extends AbstractType
 {
@@ -25,10 +27,16 @@ class SorteoType extends AbstractType
         $builder->add('codigoSorteo',TextType::class,array('attr' => array('class'=>'form-control')))
                 ->add('mensaje',TextareaType::class,array('attr' => array('class'=>'form-control','placeholder'=>'Escribe aqui las condiciones del sorteo, el precio maximo del regalo ,la fecha limite')))
                 ->add('asunto',TextType::class,array('attr' => array('class'=>'form-control focusedInput','placeholder'=>'escribe aqui un titulo o asunto para el Sorteo del Amigo Invisible')))
-
+                ->addEventSubscriber(new AddNameFieldListener())
+                ->addEventSubscriber(new AddEmailFieldListener())
                 ->add('participantes', CollectionType::class,
-                    array('entry_type'=>ParticipanteType::class,
-                    'block_name' => 'lista_participantes'
+                    array(
+                        'entry_type'=>ParticipanteType::class,
+                        'block_name' => 'lista_participantes',
+                        'prototype'=>false,
+                        'allow_add'=>true,
+                        'allow_delete'=>true,
+                        'label'=>'Participantes'
                     ))
 
                 ->add('save', SubmitType::class, array('label' => 'Guardar', 'attr'=>array('class'=>'btn btn-default')))

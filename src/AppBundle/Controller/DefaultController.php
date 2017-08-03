@@ -25,6 +25,7 @@ class DefaultController extends Controller
     {
         $logger=$this->get('logger');
         $helpers = $this->get('app.helpers');
+
         $localizacion=$helpers->dameNombreActionActual($request);
 
         $sorteo =new Sorteo();
@@ -85,12 +86,17 @@ class DefaultController extends Controller
             if($form->get('save')->isClicked())
             {
                 $logger->info('hemos clicado en creear Sorteo');
-                $sorteo= $form->getData();
-                $participantes=$sorteo->getParticipantes();
-                if(count($participantes)<3)
+                $participantes=$form->get('participantes')->getData();
+                $sorteo = $form->getData();
+                //$participantes=$sorteo->getParticipantes();
+               // var_dump($sorteo);
+                $intPart=count($participantes);
+                $logger->info('hay '.$intPart.' participantes');
+                if($intPart<3)
                 {
                     $strMin3 = 'Debes de crear al menos 3 participantes';
-                    $this->get('session')->getFlashBag()->add("min3",$strMin3);
+                    //$this->get('session')->getFlashBag()->add("min3",$strMin3);
+                   $this->addFlash("min3",$strMin3);
                 }
                 else
                 {
@@ -109,18 +115,7 @@ class DefaultController extends Controller
                     return $this->redirectToRoute('homepage_sorteo',array('id'=>$sorteo->getId()));
 
                 }
-
-  
-
           
-                
-                
-  
-
-                
-
-              
-                
             }
         }
 
