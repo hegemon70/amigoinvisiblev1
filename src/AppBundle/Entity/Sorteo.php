@@ -1,5 +1,5 @@
 <?php
-
+//AppBundle\Entity\Sorteo.php
 namespace AppBundle\Entity;
 
 use AppBundle\Entity\Sorteo;

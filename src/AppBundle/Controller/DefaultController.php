@@ -28,17 +28,15 @@ class DefaultController extends Controller
         $sorteo = new Sorteo();
         $codigo=$helpers->generoNumeroSerieAleatorio();
         $sorteo->setCodigoSorteo($codigo);
-        $form=$this->createForm(SorteoType::class,$sorteo);
+       
 
-        $participante = new Participante();
-        $participante->setNombre('fffffff');
-        $participante->setCorreo('bbbbbbb');
+         $participante = new Participante();
         $sorteo->getParticipantes()->add($participante);
 
          $participante = new Participante();
-        $participante->setNombre('fffffff1');
-        $participante->setCorreo('bbbbbbb1');
         $sorteo->getParticipantes()->add($participante);
+
+         $form=$this->createForm(SorteoType::class,$sorteo);
          $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -47,6 +45,7 @@ class DefaultController extends Controller
             {
                 try 
                {
+                    $sorteo = $form->getData();
                     $em = $this->getDoctrine()->getManager();
                     $em->persist($sorteo);
                     $em->flush();
@@ -58,7 +57,7 @@ class DefaultController extends Controller
                     $logger->error('error en '.$localizacion.' '.$e->getMessage());
                 }
 
-               // return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
+               return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
             }
         }
         return $this->render('default/blocks/sorteo.html.twig',

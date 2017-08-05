@@ -1,15 +1,15 @@
 var $collectionHolder;
 
 // setup an "add a participante" link
-var $addParticipanteLink = $('<a href="#" class="add_participante_link">Add a participante</a>');
-var $newLinkTd = $('<td></td>').append($addParticipanteLink);
+var $addParticipanteLink = ('<a href="#" class="add_participante_link">Add a participante</a>');
+var $newLinkLi = $('<li></li>').append($addParticipanteLink);
 
 jQuery(document).ready(function() {
     // Get the ul that holds the collection of participantes
-    $collectionHolder = $('tr.participantes');
+    $collectionHolder = $('ul.participantes');
 
     // add the "add a participante" anchor and li to the participantes ul
-    $collectionHolder.append($newLinkTd);
+    $collectionHolder.append($newLinkLi);
 
     // count the current form inputs we have (e.g. 2), use that as the new
     // index when inserting a new item (e.g. 2)
@@ -20,7 +20,7 @@ jQuery(document).ready(function() {
         e.preventDefault();
 
         // add a new participante form (see next code block)
-        addParticipanteForm($collectionHolder, $newLinkTd);
+        addParticipanteForm($collectionHolder, $newLinkLi);
     });
 });
 
@@ -39,6 +39,6 @@ function addParticipanteForm($collectionHolder, $newLinkLi) {
     $collectionHolder.data('index', index + 1);
 
     // Display the form in the page in an li, before the "Add a participante" link li
-    var $newFormTd = $('<td></td>').append(newForm);
-    $newLinkTd.before($newFormTd);
+    var $newFormLi = $('<li></li>').append(newForm);
+    $newLinkLi.before($newFormLi);
 }
