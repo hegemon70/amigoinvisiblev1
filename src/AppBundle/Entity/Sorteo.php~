@@ -2,6 +2,11 @@
 
 namespace AppBundle\Entity;
 
+use AppBundle\Entity\Sorteo;
+use AppBundle\Entity\Participante; 
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
 /**
  * Sorteo
  */
@@ -27,6 +32,13 @@ class Sorteo
      */
     private $asunto;
 
+
+    protected $participante;
+
+    public function __construct()
+    {
+        $this->participante = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -109,5 +121,68 @@ class Sorteo
     {
         return $this->asunto;
     }
-}
 
+    /**
+     * Set participante
+     *
+     * @param Participante $participante
+     *
+     * @return Sorteo
+     */
+     public function setParticipante(Participante $participante)
+    {
+        $this->participante[]=$participante;
+        return $this;
+    }
+
+    /**
+     * Get participantes
+     *
+     * @return Participente
+     */
+    public function getParticipantes()
+    {
+        return $this->participante;
+    }
+
+
+         //Metodo MAGICO creado para devolver el nombre 
+    public function __toString() {
+        $format='%.0u';
+        return sprintf($format,$this->codigoSorteo);
+    }
+
+    /**
+     * Add participante
+     *
+     * @param \AppBundle\Entity\Participante $participante
+     *
+     * @return Sorteo
+     */
+    public function addParticipante(\AppBundle\Entity\Participante $participante)
+    {
+        $this->participante[] = $participante;
+
+        return $this;
+    }
+
+    /**
+     * Remove participante
+     *
+     * @param \AppBundle\Entity\Participante $participante
+     */
+    public function removeParticipante(\AppBundle\Entity\Participante $participante)
+    {
+        $this->participante->removeElement($participante);
+    }
+
+    /**
+     * Get participante
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParticipante()
+    {
+        return $this->participante;
+    }
+}

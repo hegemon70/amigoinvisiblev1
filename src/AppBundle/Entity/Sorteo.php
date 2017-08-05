@@ -151,4 +151,38 @@ class Sorteo
         $format='%.0u';
         return sprintf($format,$this->codigoSorteo);
     }
+
+    /**
+     * Add participante
+     *
+     * @param \AppBundle\Entity\Participante $participante
+     *
+     * @return Sorteo
+     */
+    public function addParticipante(\AppBundle\Entity\Participante $participante)
+    {
+        $this->participante[] = $participante;
+
+        return $this;
+    }
+
+    /**
+     * Remove participante
+     *
+     * @param \AppBundle\Entity\Participante $participante
+     */
+    public function removeParticipante(\AppBundle\Entity\Participante $participante)
+    {
+        $this->participante->removeElement($participante);
+    }
+
+    /**
+     * Get participante
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getParticipante()
+    {
+        return $this->participante;
+    }
 }

@@ -110,4 +110,3 @@ class Sesion
         return $this->idSorteo;
     }
 }
-

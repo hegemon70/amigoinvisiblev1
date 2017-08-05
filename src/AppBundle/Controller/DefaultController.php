@@ -17,10 +17,55 @@ use Psr\Log\LoggerInterface;
 
 class DefaultController extends Controller
 {
-    
     /**
      * @Route("/", name="homepage")
      */
+    public function sorteoAction(Request $request)
+    {
+        $logger=$this->get('logger');
+        $helpers = $this->get('app.helpers');
+
+        $sorteo = new Sorteo();
+        $codigo=$helpers->generoNumeroSerieAleatorio();
+        $sorteo->setCodigoSorteo($codigo);
+        $form=$this->createForm(SorteoType::class,$sorteo);
+
+        $participante = new Participante();
+        $participante->setNombre('fffffff');
+        $participante->setCorreo('bbbbbbb');
+        $sorteo->getParticipantes()->add($participante);
+
+         $participante = new Participante();
+        $participante->setNombre('fffffff1');
+        $participante->setCorreo('bbbbbbb1');
+        $sorteo->getParticipantes()->add($participante);
+         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            //TODO TRATAMOS LA PETICION
+            if($form->get('save')->isClicked())
+            {
+                try 
+               {
+                    $em = $this->getDoctrine()->getManager();
+                    $em->persist($sorteo);
+                    $em->flush();
+                    $logger->warning('Sorteo guardado');
+                    $idSorteo=$sorteo->getId();
+                } 
+                catch (Exception $e) 
+                {
+                    $logger->error('error en '.$localizacion.' '.$e->getMessage());
+                }
+
+               // return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
+            }
+        }
+        return $this->render('default/blocks/sorteo.html.twig',
+            array( 'form'=>$form->createView()));
+    }
+
+
     public function indexAction(Request $request)
     {
         $logger=$this->get('logger');
