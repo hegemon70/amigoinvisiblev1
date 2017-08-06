@@ -1,0 +1,73 @@
+{# app\Resources\views\default\blocks\sorteo.html.twig #}
+{% extends 'base.html.twig' %}
+{% block body %}
+	{{ form_start(form) }}
+		{{form_row(form.codigoSorteo)}}
+		<h3>Participantes</h3>
+	<ul class="participantes" data-prototype="{{ form_widget(form.participantes.vars.prototype)|e('html_attr') }}">
+	{% for participante in form.participantes%}	
+    	<li>
+    		{{form_row(participante.nombre)}}{{form_row(participante.correo)}}
+    	</li>
+	{% endfor %}
+	</ul>
+{{ form_end(form)}}
+
+{% endblock %}
+
+{% block javascripts %}
+
+	 <script src="{{ asset('../vendor/components/jquery/jquery.min.js') }}"></script>
+
+		<script language="JavaScript" type="text/javascript" >
+/*	    var $collectionHolder;
+    //var $ = require('jquery');
+    // setup an "add a participante" link
+    var $addParticipanteLink = $('<a href="#" class="add_participante_link">Add a participante</a>');
+    var $newLinkLi = $('<li></li>').append($addParticipanteLink);
+
+    jQuery(document).ready(function() {
+        // Get the ul that holds the collection of participantes
+        $collectionHolder = $('ul.participantes');
+
+        // add the "add a participante" anchor and li to the participantes ul
+        $collectionHolder.append($newLinkLi);
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+        $addParticipanteLink.on('click', function(e) {
+            // prevent the link from creating a "#" on the URL
+            e.preventDefault();
+
+            // add a new participante form (see next code block)
+            addParticipanteForm($collectionHolder, $newLinkLi);
+        });
+    });
+
+function addParticipanteForm($collectionHolder, $newLinkLi) {
+    // Get the data-prototype explained earlier
+    var prototype = $collectionHolder.data('prototype');
+
+    // get the new index
+    var index = $collectionHolder.data('index');
+
+    // Replace '__name__' in the prototype's HTML to
+    // instead be a number based on how many items we have
+    var newForm = prototype.replace(/__name__/g, index);
+
+    // increase the index with one for the next item
+    $collectionHolder.data('index', index + 1);
+
+    // Display the form in the page in an li, before the "Add a participante" link li
+    var $newFormLi = $('<li></li>').append(newForm);
+    $newLinkLi.before($newFormLi);
+}
+*/
+</script>
+ <script src="{{ asset('../vendor/components/jquery/jquery.min.js') }}"></script>
+ <script src="{{ asset('/amigoinvisiblev1/web/bundles/app/js/participantes.js')
+}}"></script> -->
+ <!--<script src="{#{{ asset('/amigoinvisiblev1/web/bundles/app/js/example.js') }}#}"></script>-->
+{% endblock javascripts %}
