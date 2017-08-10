@@ -15,6 +15,5 @@
             allow_duplicate: false,
             min: 3,
             hide_useless_buttons: true,
-            drag_drop: false,
-            elements_selector: '> tr'
+            drag_drop: false
         });
