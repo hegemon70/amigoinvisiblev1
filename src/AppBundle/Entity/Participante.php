@@ -11,7 +11,7 @@ use AppBundle\Entity\Participante;
 class Participante
 {
 
-    const NUM_PART=6;
+    const NUM_PART=1;
 
     /**
      * @var integer

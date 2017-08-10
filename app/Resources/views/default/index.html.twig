@@ -2,7 +2,7 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-    {{dump(codigo)}}
+   
     <div> 
       
                 {% set pos = 0 %}
@@ -23,30 +23,13 @@
                     Puedes <a href="{{ path('recuperar') }}">recuperar el sorteo </a> 
                 </div>
                 <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <th>nombre</th>
-                            <th>correo</th>
-                        {#    <th>asignado</th>
-                            <th>sorteo</th> #}
-                        </tr>
-                    </thead>
-                    <tbody>
+                  <div class="participantes list-unstyled "> 
               
-                   {% for participante in participantes %}
-                        <tr class="participantes" data-prototype="{{ form_widget(form.participantes.vars.prototype)|e('html_attr') }}">
-                        <td>
+                    {% form_theme form.participantes 'default/themes/participante-theme.html.twig' 'jquery.collection.html.twig' 
+                                %}
+                  {{form_row(form.participantes)}}
 
-                            {{ render(controller('AppBundle:Participantes:nueva',{'participante': participante}                    )) }}
-                            
-                        </td>
-                    </tr>
-                    
-                    
-                   {% endfor %}
-
-            
-                </tbody>
+            </div>
                 </table>
    
             {{form_row(form.codigoSorteo)}}
@@ -56,8 +39,11 @@
             </div>
             {{ form_end(form,{'render_rest':false}) }}
 
-       </div>         
-      
+              
+       <script src="{{ asset('js/jquery.js') }}"></script>
+
+    <script src="{{ asset('js/jquery.collection.js') }}"></script>
+  <script src="{{ asset('bundles/app/js/participantes.js') }}"></script>
 
 {% endblock %}
 

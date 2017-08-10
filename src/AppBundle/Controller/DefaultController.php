@@ -17,55 +17,13 @@ use Psr\Log\LoggerInterface;
 
 class DefaultController extends Controller
 {
+   
+  
+
     /**
      * @Route("/", name="homepage")
      */
-    public function sorteoAction(Request $request)
-    {
-        $logger=$this->get('logger');
-        $helpers = $this->get('app.helpers');
-
-        $sorteo = new Sorteo();
-        $codigo=$helpers->generoNumeroSerieAleatorio();
-        $sorteo->setCodigoSorteo($codigo);
-       
-
-         $participante = new Participante();
-        $sorteo->getParticipantes()->add($participante);
-
-         $participante = new Participante();
-        $sorteo->getParticipantes()->add($participante);
-
-         $form=$this->createForm(SorteoType::class,$sorteo);
-         $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            //TODO TRATAMOS LA PETICION
-            if($form->get('save')->isClicked())
-            {
-                try 
-               {
-                    $sorteo = $form->getData();
-                    $em = $this->getDoctrine()->getManager();
-                    $em->persist($sorteo);
-                    $em->flush();
-                    $logger->warning('Sorteo guardado');
-                    $idSorteo=$sorteo->getId();
-                } 
-                catch (Exception $e) 
-                {
-                    $logger->error('error en '.$localizacion.' '.$e->getMessage());
-                }
-
-               return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
-            }
-        }
-        return $this->render('default/blocks/sorteo.html.twig',
-            array( 'form'=>$form->createView()));
-    }
-
-
-    public function indexAction(Request $request)
+        public function indexAction(Request $request)
     {
         $logger=$this->get('logger');
         $helpers = $this->get('app.helpers');
@@ -73,55 +31,23 @@ class DefaultController extends Controller
         $localizacion=$helpers->dameNombreActionActual($request);
 
         $sorteo =new Sorteo();
-        $codigo=$helpers->generoNumeroSerieAleatorio();
+         $codigo=$helpers->generoNumeroSerieAleatorio();
         $sorteo->setCodigoSorteo($codigo);
-        //$arrColParticipantes=new ArrayCollection(); 
-        $form=$this->createForm(SorteoType::class,$sorteo);
-         //https://github.com/symfony/symfony-docs/issues/6056 HeahDude commented on 15 May 2016
-
-        //$form = $this->createFormBuilder(SorteoType::class)
-        //        ->add('save', SubmitType::class)
-        //       ->getForm();
-        $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
-
-        $contador=0;
-        $numPart=Participante::NUM_PART;// NUM_PART en entity Participante
-        
-        //CONSULTO LOS PARTICIPANTES VACIOS
-        $em = $this->getDoctrine()->getManager();
-        $participante_rep=$em->getRepository("AppBundle:Participante");
-        $participantes=$participante_rep->findBySinSorteo();
-        
-        foreach ($participantes as $participante) {
-             $logger->info('el tipo de $participante es un : '.gettype($participante));
-              $logger->info(' y tiene de nombre: '.$participante->getNombre());
-        }
-      
-
-        if (count($participantes)==0)
-        {
-            for ($i=0; $i < $numPart; $i++) 
+         $contador=0;
+        $numPart=Participante::NUM_PART;// NUM_PART en entity Participante 
+        for ($i=0; $i < $numPart; $i++) 
             {
                  $participante = new Participante();
-                 $participantes[]=$participante;
+
+                 $sorteo->getParticipantes()->add($participante);
             }  
-        }
-        else
-        { 
-            $contador=count($participantes);//participantes no vacios
-            if ($contador < $numPart)//hay menos de NUM_PART 
-            {
-                for($i=$contador; $i < $numPart; $i++)
-                {
-                    $participante = new Participante();
-                    $participantes[]=$participante;
-                }
-            }
-        }
+     
+        $form=$this->createForm(SorteoType::class,$sorteo);
 
-        $formato='el num de participantes no vacios es [contador]: %.0f';
-        $logger->info(sprintf($formato,$contador));
 
+        $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
+
+     
 
         $form->handleRequest($request);
 
@@ -130,21 +56,20 @@ class DefaultController extends Controller
             if($form->get('save')->isClicked())
             {
                 $logger->info('hemos clicado en crear Sorteo');
-                 unset($participantes);//elimino los datos anteriores a la recogida del formulario
+                 //unset($participantes);//elimino los datos anteriores a la recogida del formulario
+                
                 $sorteo = $form->getData();
-               //https://codereviewvideos.com/course/symfony2-form-collection-tutorial/video/introduction-to-the-symfony-form-collection-field-type
-               /* $participantes=$sorteo->getParticipantes();
-                var_dump($participantes);
-                $intPart=count($participantes);
-                $logger->info('hay '.$intPart.' participantes');
-                if($intPart<3)
+                //genero y creo el codigo de sorteo para grabar
+                $codigo=$helpers->generoNumeroSerieAleatorio();
+                $sorteo->setCodigoSorteo($codigo);
+
+                //bucle para colocar la foreing key
+                foreach ($sorteo->getParticipantes() as $participante)
                 {
-                    $strMin3 = 'Debes de crear al menos 3 participantes';
-                    //$this->get('session')->getFlashBag()->add("min3",$strMin3);
-                   $this->addFlash("min3",$strMin3);
+                    $participante->setIdSorteo($sorteo);
                 }
-                else
-                {*/
+                
+             
                    try 
                    {
                     //https://knpuniversity.com/screencast/new-in-symfony3/form-updates
@@ -153,26 +78,16 @@ class DefaultController extends Controller
                         $em->flush();
                         $logger->warning('Sorteo guardado');
                         $idSorteo=$sorteo->getId();
-                        /*foreach ($participantes as $participante) 
-                        {
-                            if($participante)
-                            $participante->setIdSorteo($sorteo);
-                            $em = $this->getDoctrine()->getManager();
-                            $em->persist($participante);
-                            $em->flush();
-                            
-                            $format='%d';
-                            $logger->warning('Participante '.sprintf($format,$participante->getId()).' del sorteo '.sprintf($format,$idSorteo).' se ha guardado');
-                        }*/
+                       
                     } 
                     catch (Exception $e) 
                     {
                         $logger->error('error en '.$localizacion.' '.$e->getMessage());
                     }
 
-                    return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
+                    //return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
 
-               // }
+   
           
             }
         }
@@ -180,7 +95,7 @@ class DefaultController extends Controller
         
          return $this->render('default/index.html.twig',
             array( 'form'=>$form->createView(),
-                        "participantes"=>$participantes,
+                        //"participantes"=>$participantes,
                         "contador"=>$contador,
                         "numpart"=>$numPart,
                         "recuperado"=>false,
@@ -303,5 +218,47 @@ class DefaultController extends Controller
         }
         return $this->redirectToRoute('homepage');
     }
+  // public function sorteoAction(Request $request)
+    // {
+    //     $logger=$this->get('logger');
+    //     $helpers = $this->get('app.helpers');
 
+    //     $sorteo = new Sorteo();
+    //     $codigo=$helpers->generoNumeroSerieAleatorio();
+    //     $sorteo->setCodigoSorteo($codigo);
+       
+
+    //      $participante = new Participante();
+    //     $sorteo->getParticipantes()->add($participante);
+
+    //      $participante = new Participante();
+    //     $sorteo->getParticipantes()->add($participante);
+
+    //      $form=$this->createForm(SorteoType::class,$sorteo);
+    //      $form->handleRequest($request);
+
+    //     if ($form->isSubmitted() && $form->isValid()) {
+    //         //TODO TRATAMOS LA PETICION
+    //         if($form->get('save')->isClicked())
+    //         {
+    //             try 
+    //            {
+    //                 $sorteo = $form->getData();
+    //                 $em = $this->getDoctrine()->getManager();
+    //                 $em->persist($sorteo);
+    //                 $em->flush();
+    //                 $logger->warning('Sorteo guardado');
+    //                 $idSorteo=$sorteo->getId();
+    //             } 
+    //             catch (Exception $e) 
+    //             {
+    //                 $logger->error('error en '.$localizacion.' '.$e->getMessage());
+    //             }
+
+    //            return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
+    //         }
+    //     }
+    //     return $this->render('default/blocks/sorteo.html.twig',
+    //         array( 'form'=>$form->createView()));
+    // }
 }

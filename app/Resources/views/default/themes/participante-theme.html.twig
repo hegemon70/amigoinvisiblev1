@@ -1,0 +1,24 @@
+{# app\Resources\views\default\themes\participante-theme.html.twig #}
+{% block Participante_label %}
+{% endblock %}
+{% block ParticipanteType_row %}
+<div class="col-md-12">
+  {{ form_errors(form) }}
+  {{ form_widget(form) }}
+</div>
+{% endblock %}
+
+{% block ParticipanteType_widget %}
+<div class="row horizontal-form">
+    {{ form_errors(form) }}
+    <div class="col-md-5" >
+        {{ form_widget(form.nombre) }}
+    </div>
+    <div class="col-md-5">
+      {{ form_widget(form.correo) }}
+    </div>
+    <div class="col-md-5 text-right">
+          <a href="#" class="btn-sm btn-default collection-remove" title="quitar Participante"><span class="glyphicon glyphicon-trash"></span></a>
+    </div>
+</div>
+{% endblock %}
