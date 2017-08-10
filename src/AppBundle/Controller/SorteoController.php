@@ -14,14 +14,38 @@ class SorteoController extends Controller
 	 /**
      * @Route("/sorteo/{id}", name="homepage_sorteo")
      */
-    public function sorteoAction($id)
+    public function sorteoAction(Request $request,$id)
     {
-    	$sorteo =new Sorteo();
+        $logger=$this->get('logger');
+        $helpers = $this->get('app.helpers');
+        //recojo de la BBDD por el id
+    	$em = $this->getDoctrine()->getManager();
+        $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
+        $sorteo=$sorteos_rep->findOneById($id);
+
+        if (! is_null($sorteo))//si sorteo recuperado
+        {
+            $logger->info('sorteo: '.$sorteo.'sin asunto ni mensaje');
+        }
     	$form=$this->createForm(SorteoType::class,$sorteo);
     	$form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            if($form->get('save')->isClicked())
+            {
+                $sorteo=$form->getData();
+                $em = $this->getDoctrine()->getManager();
+                $em->persist($sorteo);
+                $em->flush();
+                $logger->warning('Sorteo modificado');
+                $idSorteo=$sorteo->getId();
+            }
+            else
+            {
+                 return $this->redirectToRoute('homepage' array('recuperado' => true,'codigo'=>$sorteo->getCodigoSorteo())); 
+
+            }
         }
 
         

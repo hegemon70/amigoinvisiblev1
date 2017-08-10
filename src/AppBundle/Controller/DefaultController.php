@@ -85,7 +85,7 @@ class DefaultController extends Controller
                         $logger->error('error en '.$localizacion.' '.$e->getMessage());
                     }
 
-                    //return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
+                    return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
 
    
           

@@ -11,13 +11,17 @@
 
 
     <h3>Participantes</h3>
-    <ul class="participante">
+    <ul class="participante list-unstyled">
         {# iterate over each existing tag and render its only field: name #}
         {% for participante in form.participantes %}
-            <li>{{ form_widget(participante.nombre) }}</li>
+            <li>{{ form_row(participante.nombre,{'attr':{'disabled':'disabled'}}) }}</li>
         {% endfor %}
     </ul>
-{{ form_end(form) }}
+    {{ form_row(form._token) }}
+    {{ form_widget(form.save, {'label':'envia_mensajes'}) }}
+    {{ form_widget(form.cancel, {'label':'Volver'}) }}
+    {{ form_end(form,{'render_rest':false}) }}
+
 
  
                        
