@@ -30,22 +30,38 @@ class DefaultController extends Controller
 
         $localizacion=$helpers->dameNombreActionActual($request);
 
-        $sorteo =new Sorteo();
-         $codigo=$helpers->generoNumeroSerieAleatorio();
-        $sorteo->setCodigoSorteo($codigo);
          $contador=0;
-        $numPart=Participante::NUM_PART;// NUM_PART en entity Participante 
-        for ($i=0; $i < $numPart; $i++) 
+        $numPart=Participante::NUM_PART;// NUM_PART en entity       Participante 
+
+         $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
+         if ($devuelto)
+         {
+            $id=$request->query->get('idSorteo');
+            try 
+            {
+                $em = $this->getDoctrine()->getManager();
+                $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
+                $sorteo=$sorteos_rep->findOneById($id);
+                $codigo=$sorteo->getCodigoSorteo();
+                $numOldPart=count($sorteo->getParticipantes());
+            } 
+            catch (Exception $e) {
+                 $logger->error('error al devolver sorteo en '.$localizacion.' '.$e->getMessage());
+            }     
+         }
+         else
+         {
+            $sorteo =new Sorteo();
+            for ($i=0; $i < $numPart; $i++) 
             {
                  $participante = new Participante();
-
                  $sorteo->getParticipantes()->add($participante);
-            }  
+            } 
+         }
      
         $form=$this->createForm(SorteoType::class,$sorteo);
 
-
-        $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
+       
 
      
 
@@ -59,17 +75,69 @@ class DefaultController extends Controller
                  //unset($participantes);//elimino los datos anteriores a la recogida del formulario
                 
                 $sorteo = $form->getData();
-                //genero y creo el codigo de sorteo para grabar
-                $codigo=$helpers->generoNumeroSerieAleatorio();
-                $sorteo->setCodigoSorteo($codigo);
 
+                if($devuelto)
+                { 
+                //FIXME esto no funciona por que sincroniza 
+                //hay que hacerlo con
+                // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html
+                // 14.4. DELETE queries
+                    ///PROBABLEMENTE HAYA QUE COMPARAR CONTENIDO POR CONTENIDO
+                    $numNewPart=count($sorteo->getParticipantes());
+                    if($numNewPart < $numOldPart)//si ha reducido el num de participantes
+                    {
+                        $format='%d';
+
+                        $logger->info('se ha reducido en '.sprintf($format,($numOldPart - $numNewPart)).' el numero de participantes');
+                       $format='%.0f';
+                        $logger->info('el codigo sorteo es: '.printf($format,$codigo));
+                        //como no tenemos en le formulario
+                        $id=$sorteo->getId();
+                        $em = $this->getDoctrine()->getManager();
+                        $participante_rep=$em->getRepository("AppBundle:Participante");
+                        //recuperamos los participantes con el id de sorteo
+                        $oldParticipantes=$participante_rep->findByParticipantesSorteo($id);
+                        //los borramos uno a uno
+                        foreach ($oldParticipantes as
+                         $participante)
+                        {
+                            $em = $this->getDoctrine()->getManager();
+                            $em->remove($participante);
+                            $em->flush();
+                            $logger->info($participante.' eliminado');
+                        }
+                        
+                        $em = $this->getDoctrine()->getManager();
+                        $em->remove($sorteo);
+                        $em->flush();
+                        $logger->info('Sorteo antiguo eliminado');
+                        //recupero del formulario el sorteo remodelado
+                        $sorteo = $form->getData();
+                        if(!is_null($sorteo)){
+                            foreach ($sorteo->getParticipantes() as
+                             $participante)
+                            {
+                                $logger->info('del formulario recuperamos el participante '.$participante);
+                            }
+                        }
+                        else
+                        {
+                            $logger->info('no recuperamos los participantes ');
+                        }
+                    }
+
+                }
+                else//inicial
+                {
+                    //genero y creo el codigo de sorteo para grabar
+                    $codigo=$helpers->generoNumeroSerieAleatorio();
+                }
+                 $sorteo->setCodigoSorteo($codigo);
                 //bucle para colocar la foreing key
                 foreach ($sorteo->getParticipantes() as $participante)
                 {
                     $participante->setIdSorteo($sorteo);
                 }
-                
-             
                    try 
                    {
                     //https://knpuniversity.com/screencast/new-in-symfony3/form-updates

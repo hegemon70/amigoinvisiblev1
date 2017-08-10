@@ -30,7 +30,8 @@ class SorteoController extends Controller
     	$form=$this->createForm(SorteoType::class,$sorteo);
     	$form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
 
             if($form->get('save')->isClicked())
             {
@@ -43,12 +44,9 @@ class SorteoController extends Controller
             }
             else
             {
-                 return $this->redirectToRoute('homepage' array('recuperado' => true,'codigo'=>$sorteo->getCodigoSorteo())); 
-
+                 return $this->redirectToRoute('homepage', array('devuelto' => true,'idSorteo'=>$id)); 
             }
         }
-
-        
         return $this->render('default/Sorteo.html.twig',
                          array('form'=>$form->createView()
                          	));

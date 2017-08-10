@@ -26,13 +26,13 @@ class ParticipanteRepository extends EntityRepository
        return $this->getEntityManager()
        ->createQuery('SELECT p FROM AppBundle:Participante p WHERE ( p.idSorteo IS NULL)')
        ->getResult();
-       //createQuery('SELECT P FROM AppBundle::Participante')->getResult();
-       // $participantes = $this->getManager()->find('idSorteo', ISNULL);
-        //$qb->where('p.idSorteo IS NULL');
-
-       // $idParticipantes = $qb->getQuery()->getArrayResult();
-       
-     
 	}
 
+  public function findByParticipantesSorteo($id)
+  {
+       return $this->getEntityManager()
+       ->createQuery('SELECT p FROM AppBundle:Participante p WHERE ( p.idSorteo = ?1)')
+       ->setParameter(1,$id)
+       ->getResult();
+  }
 }
