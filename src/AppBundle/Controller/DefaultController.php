@@ -99,7 +99,6 @@ class DefaultController extends Controller
                         "contador"=>$contador,
                         "numpart"=>$numPart,
                         "recuperado"=>false,
-                        "codigo"=>$codigo
                 )           
                             );
       

@@ -28,11 +28,10 @@
                     {% form_theme form.participantes 'default/themes/participante-theme.html.twig' 'jquery.collection.html.twig' 
                                 %}
                   {{form_row(form.participantes)}}
-
+   
             </div>
                 </table>
    
-            {{form_row(form.codigoSorteo)}}
             {{ form_row(form._token) }}
             <div>
             {{ form_widget(form.save, {'label':'Crea Sorteo'}) }}  
