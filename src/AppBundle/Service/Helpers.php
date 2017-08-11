@@ -327,12 +327,12 @@ class Helpers {
             $lenPart=count($sorteo->getParticipantes());
             for ($i=0; $i <$lenPart ; $i++) 
             { 
-                $arrPosiciones['posiciones']=$i;
+                $arrPosiciones['posiciones'][]=$i;
             }
             
-            foreach ($sorteo->getParticipantes() as $participantes) 
+            foreach ($sorteo->getParticipantes() as $participante) 
             {
-                $arrPosiciones['indices']=$participante->getId();
+                $arrPosiciones['indices'][]=$participante->getId();
             }  
 
         }
@@ -343,11 +343,18 @@ class Helpers {
      public function damePosiciones(Sorteo $sorteo)
      {
         $arrPosition=array();
-        $lenPart=count($sorteo->getParticipantes());
-        for ($i=0; $i <$lenPart ; $i++) 
-        { 
-            $arrPosition[]=$i;
+         if(is_null($sorteo))
+            $arrPosiciones=NULL;
+        else
+        {
+            $lenPart=count($sorteo->getParticipantes());
+            for ($i=0; $i <$lenPart ; $i++) 
+            { 
+                $arrPosition[]=$i;
+            }
         }
+        return $arrPosition;
+       
      }
 
 /*
@@ -378,13 +385,13 @@ class Helpers {
 
     public function logeaUnInt($int,$mensaje)
     {
-        $format=' %s %d ';
+        $format=' %2$s %1$d ';
         $this->logger->info(sprintf($format,$int,$mensaje));
     }
 
     public function logeaUnFloat($int,$mensaje)
     {
-        $format=' %s %.0f ';
+        $format=' %2$s %1$.0f ';
         $this->logger->info(sprintf($format,$int,$mensaje));
     }
 }   

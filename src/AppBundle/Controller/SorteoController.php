@@ -29,7 +29,37 @@ class SorteoController extends Controller
         }
 
          $arrPosiciones=$helpers->dameArrayPosiciones($sorteo);
-        //,'arrPosiciones'=>$arrPosiciones)
+        if(is_null($arrPosiciones))
+        {
+            $logger->warning('arrPosiciones esta a Null en sorteo');
+        }
+        /*
+        else
+        {
+        
+            $logger->info('muestro old posiciones desde sorteo antes de volver');
+            //var_dump($arrPosiciones);
+            
+            if(!is_null($arrPosiciones['posiciones']))
+            {
+                $helpers->logeaUnArrayDeIntHorizontal($arrPosiciones['posiciones']);
+            }
+            else
+            {
+                $logger->warning('arrPosiciones["posiciones"] vacio');
+            }
+            $logger->info('muestro old indices desde sorteo');
+            if(!is_null($arrPosiciones['indices']))
+            {
+                $helpers->logeaUnArrayDeIntHorizontal($arrPosiciones['indices']);
+            }
+            else
+            {
+                 $logger->warning('arrPosiciones["indices"] vacio');
+            }
+            
+        }
+        */
 
 
     	$form=$this->createForm(SorteoType::class,$sorteo);
@@ -49,37 +79,40 @@ class SorteoController extends Controller
             }
             else
             {
-               
-                /*
-                if(is_null($arrPosiciones))
-                {
-                    $logger->warning('arrPosiciones esta a Null en sorteo');
-                }
-                else
-                {
+        if(is_null($arrPosiciones))
+        {
+            $logger->warning('arrPosiciones esta a Null en sorteo');
+        }
+        /*
+        else
+        {
+        
+            $logger->info('muestro old posiciones desde sorteo despues de volver');
+            //var_dump($arrPosiciones);
+            
+            if(!is_null($arrPosiciones['posiciones']))
+            {
+                $helpers->logeaUnArrayDeIntHorizontal($arrPosiciones['posiciones']);
+            }
+            else
+            {
+                $logger->warning('arrPosiciones["posiciones"] vacio');
+            }
+            $logger->info('muestro old indices desde sorteo');
+            if(!is_null($arrPosiciones['indices']))
+            {
+                $helpers->logeaUnArrayDeIntHorizontal($arrPosiciones['indices']);
+            }
+            else
+            {
+                 $logger->warning('arrPosiciones["indices"] vacio');
+            }
+            
+        }
                 
-                    $logger->info('muestro old posiciones desde sorteo');
-                    if(!is_null($arrPosiciones['posiciones']))
-                    {
-                        $helpers->logeaUnArrayDeIntHorizontal($arrPosiciones['posiciones']);
-                    }
-                    else
-                    {
-                        $logger->warning('arrPosiciones["posiciones"] vacio');
-                    }
-                    $logger->info('muestro old indices desde sorteo');
-                    if(!is_null($arrPosiciones['indices']))
-                    {
-                        $helpers->logeaUnArrayDeIntHorizontal($arrPosiciones['indices']);
-                    }
-                    else
-                    {
-                         $logger->warning('arrPosiciones["indices"] vacio');
-                    }
-                
-                }
-                */
-                 return $this->redirectToRoute('homepage', array('devuelto' => true,'idSorteo'=>$id); 
+        */
+                $request->getSession()->set('arrPosiciones',$arrPosiciones);
+                 return $this->redirectToRoute('homepage', array('devuelto' => true,'idSorteo'=>$id)); 
             }
         }
         return $this->render('default/Sorteo.html.twig',

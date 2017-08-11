@@ -1,4 +1,4 @@
- 
+
 //https://github.com/ninsuo/symfony-collection/issues/47
 
  $('.mis_participantes').collection({
@@ -16,5 +16,19 @@
             min: 3,
             hide_useless_buttons: true,
             drag_drop: false,
-            position_field_selector: '.my-position'
+            position_field_selector: '.my-position',
+            before_remove: function(collection, element) 
+            { 
+                var hijosPuros=collection["0"].childElementCount;
+                var indiceUltima=hijosPuros-3;
+                var indiceElemento=element["0"].id.split("_")["2"];
+               if (indiceElemento==indiceUltima)
+                  return true
+               else
+                { 
+                  alert("no puedes borrar mas que la ultima"); 
+                  return false
+                  }
+            }
         });
+

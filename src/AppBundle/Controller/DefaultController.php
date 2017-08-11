@@ -31,12 +31,17 @@ class DefaultController extends Controller
         $numPart=Participante::NUM_PART;// NUM_PART en entity       Participante 
 
          $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
-
+         $arrOldPosiciones[]=null;
          if ($devuelto)
          {
 
             $id=$request->query->get('idSorteo');
-            $arrOldPosiciones=$request->query->get('arrPosiciones');
+            if($request->getSession()->has('arrPosiciones'))
+            {
+                $arrOldPosiciones=$request->getSession()->get('arrPosiciones');
+
+            }    
+           
             try 
             {   
                 $em = $this->getDoctrine()->getManager();
@@ -75,8 +80,10 @@ class DefaultController extends Controller
 
                 if($devuelto)
                 {   
-                    $logger->warning('formulario cambiado tras sorteo');
+                    $logger->warning('formulario cambiado en default tras volver sorteo');
+                    
                     $sorteo->setCodigoSorteo($codigoOld);//coloco al nuevo el codigo anterior
+                    
                     if(!is_null($numOldPart))
                         $helpers->logeaUnInt($numOldPart,"numero de viejos participantes:");
                     else
@@ -90,6 +97,7 @@ class DefaultController extends Controller
 
                     if($numNewPart < $numOldPart)//si ha reducido el num de participantes
                     {
+                        $logger->warning('se han reducido las posiciones');
                         $logger->info('muestro new posiciones');
                       $arrNewPosiciones=$helpers->damePosiciones($sorteo);
                       if(!is_null($arrNewPosiciones))
@@ -119,11 +127,11 @@ class DefaultController extends Controller
                              $logger->warning('arrOldposiciones["indices"] vacio');
                         }
                     }//fin si reducido
-                   
-
+                    
                 }
                 else//inicial
                 {
+                     $logger->warning('formulario inicial');
                     //genero y creo el codigo de sorteo para grabar
                     $codigo=$helpers->generoNumeroSerieAleatorio();
                     $sorteo->setCodigoSorteo($codigo);
