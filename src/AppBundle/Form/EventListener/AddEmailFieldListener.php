@@ -46,9 +46,9 @@ class AddEmailFieldListener implements EventSubscriberInterface
             $this->logger->info($sorteo);
             $formato="%.0f";
             $c=count($sorteo->getParticipantes());
-            $this->logger->warning(sprintf($formato,$c));
+            $this->logger->info(sprintf($formato,$c));
             foreach ($sorteo->getParticipantes() as $value) {
-               $this->logger->warning($value);
+               $this->logger->info($value);
             }
         }
     }

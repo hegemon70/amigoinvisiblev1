@@ -39,6 +39,9 @@ class ParticipanteType extends AbstractType
                 ->add('correo',EmailType::class,array('attr' => array('class'=>'form-control col-md-5','placeholder'=>'email')))
                 ->add('asignado',HiddenType::class)
                 ->add('idSorteo',HiddenType::class)
+                ->add('position',HiddenType::class,
+                    ['attr'=>['class'=>'my-position',],
+                    ])
                 //->add('add', SubmitType::class, array('attr'=>array('class'=>'btn-sm btn-default','title'=>"añadir Participante")))
                 //->add('save', SubmitType::class, array('label'=> 'Guerdar','attr'=>array('class'=>'btn btn-default')))
                 //-> add('cancel', SubmitType::class, array('label'=>'Cnacelar','attr'=>array('formnovalidate'=>'formnovalidate','class'=>'btn btn-default')))
@@ -54,7 +57,7 @@ class ParticipanteType extends AbstractType
     {
             $builder= $event->getForm();
             $participante=$event->getForm()->getData();
-            $this->logger->warning('estoy en el onPostSubmit de Participate');
+            $this->logger->info('estoy en el onPostSubmit de Participate');
             $this->logger->info($participante);
     /*
         if(null != $event->getData())

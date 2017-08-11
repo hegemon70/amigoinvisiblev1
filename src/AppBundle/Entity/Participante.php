@@ -38,7 +38,10 @@ class Participante
      */
     private $idSorteo;
 
-
+    /**
+     * @var integer
+     */
+    private $position;
 
     /**
      * Get id
@@ -146,6 +149,30 @@ class Participante
         return $this->idSorteo;
     }
 
+    /**
+     * Get position
+     *
+     * @return integer
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
+
+    /**
+     * Set position
+     *
+     * @param integer $position
+     *
+     * @return Participante
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+
+        return $this;
+    }
+     
    
       //Metodo MAGICO creado para devolver el nombre 
     public function __toString() 

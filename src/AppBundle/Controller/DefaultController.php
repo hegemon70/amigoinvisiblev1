@@ -17,9 +17,6 @@ use Psr\Log\LoggerInterface;
 
 class DefaultController extends Controller
 {
-   
-  
-
     /**
      * @Route("/", name="homepage")
      */
@@ -34,22 +31,27 @@ class DefaultController extends Controller
         $numPart=Participante::NUM_PART;// NUM_PART en entity       Participante 
 
          $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
+
          if ($devuelto)
          {
+
             $id=$request->query->get('idSorteo');
+            $arrOldPosiciones=$request->query->get('arrPosiciones');
             try 
-            {
+            {   
                 $em = $this->getDoctrine()->getManager();
                 $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
-                $sorteo=$sorteos_rep->findOneById($id);
-                $codigo=$sorteo->getCodigoSorteo();
-                $numOldPart=count($sorteo->getParticipantes());
+                $sorteoOld=$sorteos_rep->findOneById($id);
+                $codigoOld=$sorteoOld->getCodigoSorteo();
+                $numOldPart=count($sorteoOld->getParticipantes());
+
+                $form=$this->createForm(SorteoType::class,$sorteoOld);
             } 
             catch (Exception $e) {
                  $logger->error('error al devolver sorteo en '.$localizacion.' '.$e->getMessage());
             }     
          }
-         else
+         else//incial
          {
             $sorteo =new Sorteo();
             for ($i=0; $i < $numPart; $i++) 
@@ -57,13 +59,8 @@ class DefaultController extends Controller
                  $participante = new Participante();
                  $sorteo->getParticipantes()->add($participante);
             } 
+             $form=$this->createForm(SorteoType::class,$sorteo);
          }
-     
-        $form=$this->createForm(SorteoType::class,$sorteo);
-
-       
-
-     
 
         $form->handleRequest($request);
 
@@ -77,66 +74,75 @@ class DefaultController extends Controller
                 $sorteo = $form->getData();
 
                 if($devuelto)
-                { 
-                //FIXME esto no funciona por que sincroniza 
-                //hay que hacerlo con
-                // http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html
-                // 14.4. DELETE queries
-                    ///PROBABLEMENTE HAYA QUE COMPARAR CONTENIDO POR CONTENIDO
+                {   
+                    $logger->warning('formulario cambiado tras sorteo');
+                    $sorteo->setCodigoSorteo($codigoOld);//coloco al nuevo el codigo anterior
+                    if(!is_null($numOldPart))
+                        $helpers->logeaUnInt($numOldPart,"numero de viejos participantes:");
+                    else
+                        $logger->warning('numOldPart vacio');
+
                     $numNewPart=count($sorteo->getParticipantes());
+                    if(!is_null($numOldPart))
+                        $helpers->logeaUnInt($numNewPart,"numero de viejos participantes:");
+                    else
+                        $logger->warning('numOldPart vacio');
+
                     if($numNewPart < $numOldPart)//si ha reducido el num de participantes
                     {
-                        $format='%d';
-
-                        $logger->info('se ha reducido en '.sprintf($format,($numOldPart - $numNewPart)).' el numero de participantes');
-                       $format='%.0f';
-                        $logger->info('el codigo sorteo es: '.printf($format,$codigo));
-                        //como no tenemos en le formulario
-                        $id=$sorteo->getId();
-                        $em = $this->getDoctrine()->getManager();
-                        $participante_rep=$em->getRepository("AppBundle:Participante");
-                        //recuperamos los participantes con el id de sorteo
-                        $oldParticipantes=$participante_rep->findByParticipantesSorteo($id);
-                        //los borramos uno a uno
-                        foreach ($oldParticipantes as
-                         $participante)
-                        {
-                            $em = $this->getDoctrine()->getManager();
-                            $em->remove($participante);
-                            $em->flush();
-                            $logger->info($participante.' eliminado');
-                        }
-                        
-                        $em = $this->getDoctrine()->getManager();
-                        $em->remove($sorteo);
-                        $em->flush();
-                        $logger->info('Sorteo antiguo eliminado');
-                        //recupero del formulario el sorteo remodelado
-                        $sorteo = $form->getData();
-                        if(!is_null($sorteo)){
-                            foreach ($sorteo->getParticipantes() as
-                             $participante)
-                            {
-                                $logger->info('del formulario recuperamos el participante '.$participante);
-                            }
+                        $logger->info('muestro new posiciones');
+                      $arrNewPosiciones=$helpers->damePosiciones($sorteo);
+                      if(!is_null($arrNewPosiciones))
+                      {
+                        $helpers->logeaUnArrayDeIntHorizontal($arrNewPosiciones);
                         }
                         else
                         {
-                            $logger->info('no recuperamos los participantes ');
+                            $logger->warning('arrNewPosiciones vacio');
                         }
-                    }
+                      $logger->info('muestro old posiciones');
+                        if(!is_null($arrOldPosiciones['posiciones']))
+                        {
+                            $helpers->logeaUnArrayDeIntHorizontal($arrOldPosiciones['posiciones']);
+                        }
+                        else
+                        {
+                            $logger->warning('arrOldposiciones["posiciones"] vacio');
+                        }
+                       $logger->info('muestro old indices');
+                        if(!is_null($arrOldPosiciones['indices']))
+                        {
+                            $helpers->logeaUnArrayDeIntHorizontal($arrOldPosiciones['indices']);
+                        }
+                        else
+                        {
+                             $logger->warning('arrOldposiciones["indices"] vacio');
+                        }
+                    }//fin si reducido
+                   
 
                 }
                 else//inicial
                 {
                     //genero y creo el codigo de sorteo para grabar
                     $codigo=$helpers->generoNumeroSerieAleatorio();
+                    $sorteo->setCodigoSorteo($codigo);
                 }
-                 $sorteo->setCodigoSorteo($codigo);
+                 //bucle para asignar posiciones
+                 $numPos=count($sorteo->getParticipantes());
+                 $format='%d';
+                    $logger->info('hay '.sprintf($format,$numPos).' participantes');
+                 for ($i=0; $i < $numPos ; $i++) 
+                 { 
+                     $sorteo->getParticipantes()[$i]->setPosition($i);
+                 }
                 //bucle para colocar la foreing key
                 foreach ($sorteo->getParticipantes() as $participante)
                 {
                     $participante->setIdSorteo($sorteo);
+
+                    $format='%d';
+                    $logger->info('posicion del participante es '.sprintf($format,$participante->getPosition()));
                 }
                    try 
                    {
@@ -152,7 +158,7 @@ class DefaultController extends Controller
                     {
                         $logger->error('error en '.$localizacion.' '.$e->getMessage());
                     }
-
+                    //if(!$devuelto)//NOTE solo para debug
                     return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
 
    

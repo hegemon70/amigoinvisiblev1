@@ -23,10 +23,15 @@ class SorteoController extends Controller
         $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
         $sorteo=$sorteos_rep->findOneById($id);
 
-        if (! is_null($sorteo))//si sorteo recuperado
+        if (!is_null($sorteo))//si sorteo recuperado
         {
             $logger->info('sorteo: '.$sorteo.'sin asunto ni mensaje');
         }
+
+         $arrPosiciones=$helpers->dameArrayPosiciones($sorteo);
+        //,'arrPosiciones'=>$arrPosiciones)
+
+
     	$form=$this->createForm(SorteoType::class,$sorteo);
     	$form->handleRequest($request);
 
@@ -44,7 +49,37 @@ class SorteoController extends Controller
             }
             else
             {
-                 return $this->redirectToRoute('homepage', array('devuelto' => true,'idSorteo'=>$id)); 
+               
+                /*
+                if(is_null($arrPosiciones))
+                {
+                    $logger->warning('arrPosiciones esta a Null en sorteo');
+                }
+                else
+                {
+                
+                    $logger->info('muestro old posiciones desde sorteo');
+                    if(!is_null($arrPosiciones['posiciones']))
+                    {
+                        $helpers->logeaUnArrayDeIntHorizontal($arrPosiciones['posiciones']);
+                    }
+                    else
+                    {
+                        $logger->warning('arrPosiciones["posiciones"] vacio');
+                    }
+                    $logger->info('muestro old indices desde sorteo');
+                    if(!is_null($arrPosiciones['indices']))
+                    {
+                        $helpers->logeaUnArrayDeIntHorizontal($arrPosiciones['indices']);
+                    }
+                    else
+                    {
+                         $logger->warning('arrPosiciones["indices"] vacio');
+                    }
+                
+                }
+                */
+                 return $this->redirectToRoute('homepage', array('devuelto' => true,'idSorteo'=>$id); 
             }
         }
         return $this->render('default/Sorteo.html.twig',

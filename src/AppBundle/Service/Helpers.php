@@ -9,6 +9,7 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 use Symfony\Component\DependencyInjection\Container;
 use Doctrine\Common\Collections\ArrayCollection;
 use AppBundle\Entity\Participante;
+use AppBundle\Entity\Sorteo;
 use Psr\Log\LoggerInterface;
 
 class Helpers {
@@ -309,4 +310,81 @@ class Helpers {
         $nombre=$arrController[$posController]."/".$action;
         return $nombre;
      }
+
+     public function dameArrayPosiciones(Sorteo $sorteo)
+     {
+        if(is_null($sorteo))
+            $arrPosiciones=NULL;
+        else
+        {
+            $arrPosition=array();
+            $arrIndices=array();
+            $arrPosiciones=array(
+                "posiciones"=>$arrPosition,
+                "indices"=>$arrIndices
+                );
+
+            $lenPart=count($sorteo->getParticipantes());
+            for ($i=0; $i <$lenPart ; $i++) 
+            { 
+                $arrPosiciones['posiciones']=$i;
+            }
+            
+            foreach ($sorteo->getParticipantes() as $participantes) 
+            {
+                $arrPosiciones['indices']=$participante->getId();
+            }  
+
+        }
+             
+        return $arrPosiciones;
+     }
+
+     public function damePosiciones(Sorteo $sorteo)
+     {
+        $arrPosition=array();
+        $lenPart=count($sorteo->getParticipantes());
+        for ($i=0; $i <$lenPart ; $i++) 
+        { 
+            $arrPosition[]=$i;
+        }
+     }
+
+/*
+    pre: $arrayInt puede ser un array int o bigInt
+         $tagArray distinto de NULL si array asociativo
+         solo valido para symfony 3
+    post: muestra el tamaño del array en el log y cada uno de sus elementos
+*/
+    public function logeaUnArrayDeIntHorizontal($arrayInt,$tagArray=NULL)
+    {
+       
+        $recogedor="";
+        foreach ($arrayInt as $cursor) 
+        {
+                $formato=' %.0f';
+           if (is_null($tagArray))//array no asociativo 
+           {
+
+                $recogedor=$recogedor.sprintf($formato,$cursor)."|"; 
+           }
+           else
+           {
+                $recogedor=$recogedor.sprintf($formato,$cursor[$tagArray])."|";
+           }
+        }
+        $this->logger->info($recogedor);
+    }
+
+    public function logeaUnInt($int,$mensaje)
+    {
+        $format=' %s %d ';
+        $this->logger->info(sprintf($format,$int,$mensaje));
+    }
+
+    public function logeaUnFloat($int,$mensaje)
+    {
+        $format=' %s %.0f ';
+        $this->logger->info(sprintf($format,$int,$mensaje));
+    }
 }   

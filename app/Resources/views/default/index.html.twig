@@ -16,12 +16,16 @@
                     {% endfor %}
                 {% endif %}
                 #} 
+                {% if arrPosiciones is defined %}
+                  {{dump(arrPosiciones)}}
+                {% endif %}
               {{ form_start(form) }}
                 {{ form_errors(form)}}      
                 <div><h1>SORTEO DEL AMIGO INVISIBLE</h1></div>
                 <div><strong>¿Alguien no ha recibido su e-mail?</strong><br/>
                     Puedes <a href="{{ path('recuperar') }}">recuperar el sorteo </a> 
                 </div>
+              
                 <table class="table table-hover">
                   <div class="participantes list-unstyled "> 
               

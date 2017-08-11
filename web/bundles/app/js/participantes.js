@@ -15,5 +15,6 @@
             allow_duplicate: false,
             min: 3,
             hide_useless_buttons: true,
-            drag_drop: false
+            drag_drop: false,
+            position_field_selector: '.my-position'
         });
