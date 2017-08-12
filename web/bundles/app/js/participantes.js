@@ -17,32 +17,19 @@
             hide_useless_buttons: true,
             drag_drop: false,
             position_field_selector: '.my-position',
-            after_add:function(collection, element) {
-                  var hijosPuros=collection["0"].childElementCount;
-                  var indiceUltima=hijosPuros-3;
-                  console.log(collection);
-                  console.log("desplegados los trash");
-                  // if(indiceUltima>3)
-                  // {
-                  /*
-                  var iconoTrash1=collection["0"].childNodes["0"].childNodes["0"].childNodes[2].children["0"].children;      
-                  var padreIconoTrash1=collection["0"].childNodes["0"].childNodes["0"].childNodes[2].children;
-
-                  //console.log(iconoTrash1);
-                  //console.log(padreIconoTrash1);
-                  var spans=document.getElementsByTagName("span");
-                  //console.log(spans);
-                  */
-                  var trashs=document.getElementsByClassName("glyphicon-trash");
-                  console.log(trashs); 
-                  console.log(trashs[0]); 
-                  basura=trashs[0];
-                  basura.parentNode.removeChild(basura);
-            
-                  //console.log(iconoTrash1);
-                  //padreIconoTrash1.removeChild();
-                  // }            
+            before_add:function(collection, element) 
+            {
                  
+                  if(document.getElementsByClassName("glyphicon-trash").length===0)
+                  {
+                     console.log("no hay iconos basura");
+                  }
+                  else
+                  {
+                      var trashs=document.getElementsByClassName("glyphicon-trash");
+                      basura=trashs[0];
+                      basura.parentNode.removeChild(basura);       
+                  }
              },
             before_remove: function(collection, element) 
             { 
@@ -56,6 +43,12 @@
                   alert("no puedes borrar mas que la ultima"); 
                   return false
                   }
+            },
+            after_remove: function(collection, element)
+            {
+                  console.log(element);
+                  var iconos=document.getElementsByClassName("collection-actions");
+                  console.log(iconos);
             }
         });
 
