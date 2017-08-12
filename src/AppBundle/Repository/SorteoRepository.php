@@ -10,4 +10,13 @@ namespace AppBundle\Repository;
  */
 class SorteoRepository extends \Doctrine\ORM\EntityRepository
 {
+
+  public function findByCodigoSorteo($codigo)
+  {
+       return $this->getEntityManager()
+       ->createQuery('SELECT s FROM AppBundle:Sorteo s WHERE ( s.codigoSorteo = ?1)ORDER BY s.id DESC')
+       ->setParameter(1,$codigo)
+       ->setMaxResults(1)
+       ->getSingleResult();
+  }
 }

@@ -9,16 +9,10 @@
                     {% for message in app.flashes('min3') %}
                         <div class="alert alert-error">{{ message }}</div>
                     {% endfor %}
-                  {#
-                {% if app.session.flashbag().get('min3') is defined %}
-                    {% for message in app.session.flashbag().get('min3') %}
-                        <div class="alert alert-error">{{ message }}</div>   
-                    {% endfor %}
-                {% endif %}
-                #} 
-                {% if arrPosiciones is defined %}
+                 
+               {#  {% if arrPosiciones is defined %}
                   {{dump(arrPosiciones)}}
-                {% endif %}
+                {% endif %} #}
               {{ form_start(form) }}
                 {{ form_errors(form)}}      
                 <div><h1>SORTEO DEL AMIGO INVISIBLE</h1></div>
