@@ -16,9 +16,29 @@ class RecuperaController extends Controller
      */
     public function recuperarAction(Request $request)
     {
-    	$titulo="view Recuperar";
+    	$logger=$this->get('logger');
+        $helpers = $this->get('app.helpers');
+
+        $localizacion=$helpers->dameNombreActionActual($request);
+
+        $sorteo=new Sorteo();
+        $form=$this->createForm(SorteoType::class,$sorteo);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+          	if($form->get('save')->isClicked())
+          	{
+
+			}
+			else
+			{
+				//$request->getSession()->set('arrPosiciones',$arrPosiciones);
+                 return $this->redirectToRoute('homepage', array('devuelto' => false,'idSorteo'=>$id));			
+			}
+		}
+
     	 return $this->render('default/Recuperar.html.twig',
-                         array('titulo'=>$titulo));
+                         array('form'=>$form->createView()));
                       
     }
 }

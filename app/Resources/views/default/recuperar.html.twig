@@ -2,14 +2,29 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-        
-    <h1>{{titulo}}</h1>
+   <div>
+    
+        {% if app.session.flashbag().get('mensaje') is defined %}
+            {% for message in app.session.flashbag().get('mensaje') %}
+                <div class="alert alert-error">{{ message }}</div>   
+            {% endfor %}
+        {% endif %}
+                 
+        <h1>INTRODUCE EL CODIGO DEL SORTEO</h1>
+    
+
+     {{ form_start(form) }}
+     {{ form_errors(form)}}
+       
+        {{ form_widget(form.codigoSorteo) }}
+        {{ form_widget(form.save, {'label':'Recuperar'}) }}
+        {{ form_widget(form.cancel, {'label':'Volver'}) }}
+        {{ form_row(form._token) }}
+        {{ form_end(form,{'render_rest':false}) }} 
+   </div>
+   
+       
+
  
                        
-{% endblock %}
-
-{% block stylesheets %}
-<style>
-   
-</style>
 {% endblock %}
