@@ -35,4 +35,22 @@ class ParticipanteRepository extends EntityRepository
        ->setParameter(1,$id)
        ->getResult();
   }
+
+    public function findByParticipantesSorteoMaxId($id)
+  {
+       return $this->getEntityManager()
+       ->createQuery('SELECT p FROM AppBundle:Participante p WHERE ( p.idSorteo = ?1) ORDER BY p.id DESC')
+       ->setMaxResults(1)
+       ->setParameter(1,$id)
+       ->getOneOrNullResult();
+  }
+
+  public function findByParticipantesSorteoModernos($id,$limit)
+  {
+       return $this->getEntityManager()
+       ->createQuery('SELECT p FROM AppBundle:Participante p WHERE ( p.idSorteo = ?1) ORDER BY p.id DESC')
+       ->setParameter(1,$id)
+       ->setMaxResults($limit)
+       ->getResult();
+  }
 }

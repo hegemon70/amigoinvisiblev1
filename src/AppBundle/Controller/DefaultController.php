@@ -20,7 +20,7 @@ class DefaultController extends Controller
     /**
      * @Route("/", name="homepage")
      */
-        public function indexAction(Request $request)
+    public function indexAction(Request $request)
     {
         $logger=$this->get('logger');
         $helpers = $this->get('app.helpers');
@@ -28,6 +28,8 @@ class DefaultController extends Controller
         $localizacion=$helpers->dameNombreActionActual($request);
 
          $contador=0;
+         $reducido=false;
+         $numReducidos=0;
         $numPart=Participante::NUM_PART;// NUM_PART en entity       Participante 
 
          $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
@@ -84,48 +86,23 @@ class DefaultController extends Controller
                     
                     $sorteo->setCodigoSorteo($codigoOld);//coloco al nuevo el codigo anterior
                     
-                    if(!is_null($numOldPart))
-                        $helpers->logeaUnInt($numOldPart,"numero de viejos participantes:");
-                    else
-                        $logger->warning('numOldPart vacio');
-
+                    // if(!is_null($numOldPart))
+                    //     $helpers->logeaUnInt($numOldPart,"numero de viejos participantes:");
+                    // else
+                    //     $logger->warning('numOldPart vacio');
+                
                     $numNewPart=count($sorteo->getParticipantes());
-                    if(!is_null($numOldPart))
-                        $helpers->logeaUnInt($numNewPart,"numero de viejos participantes:");
-                    else
-                        $logger->warning('numOldPart vacio');
+                    // if(!is_null($numNewPart))
+                    //     $helpers->logeaUnInt($numNewPart,"numero de viejos participantes:");
+                    // else
+                    //     $logger->warning('numOldPart vacio');
 
                     if($numNewPart < $numOldPart)//si ha reducido el num de participantes
                     {
                         $logger->warning('se han reducido las posiciones');
-                        $logger->info('muestro new posiciones');
-                      $arrNewPosiciones=$helpers->damePosiciones($sorteo);
-                      if(!is_null($arrNewPosiciones))
-                      {
-                        $helpers->logeaUnArrayDeIntHorizontal($arrNewPosiciones);
-                        }
-                        else
-                        {
-                            $logger->warning('arrNewPosiciones vacio');
-                        }
-                      $logger->info('muestro old posiciones');
-                        if(!is_null($arrOldPosiciones['posiciones']))
-                        {
-                            $helpers->logeaUnArrayDeIntHorizontal($arrOldPosiciones['posiciones']);
-                        }
-                        else
-                        {
-                            $logger->warning('arrOldposiciones["posiciones"] vacio');
-                        }
-                       $logger->info('muestro old indices');
-                        if(!is_null($arrOldPosiciones['indices']))
-                        {
-                            $helpers->logeaUnArrayDeIntHorizontal($arrOldPosiciones['indices']);
-                        }
-                        else
-                        {
-                             $logger->warning('arrOldposiciones["indices"] vacio');
-                        }
+                       $reducido=true;
+                       $numReducidos=$numOldPart-$numNewPart;
+
                     }//fin si reducido
                     
                 }
@@ -166,13 +143,60 @@ class DefaultController extends Controller
                     {
                         $logger->error('error en '.$localizacion.' '.$e->getMessage());
                     }
-                    //if(!$devuelto)//NOTE solo para debug
-                    return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
+                    if($reducido)
+                    {
+                        $em = $this->getDoctrine()->getManager();
+                            $participantes_rep=$em->getRepository("AppBundle:Participante");
+                        if ($numReducidos==1) 
+                        {
+                            $partEliminado=null;
+                            
+                            $partEliminado=$participantes_rep->findByParticipantesSorteoMaxId($id);
+                            if (!is_null($partEliminado)) 
+                            {
+                                $em = $this->getDoctrine()->getManager();
+                                $em->remove($partEliminado);
+                                $em->flush();
+                                $logger->info('eliminado el participante');
+                            }
+                            else{
+                             $logger->error('fallo al recuperar el reducido en '.$localizacion);
+                            }
+                            
+                        }
+                        else //mas de 1 reducidos
+                        {
 
-   
-          
-            }
-        }
+                            if ($numReducidos>1) 
+                            {
+                                //recupero todos los participantes eliminados
+                               $partEliminados=$participantes_rep->findByParticipantesSorteoModernos($id,$numReducidos);
+                            }
+                            else{
+                                $logger->error('fallo al contar los reducidos en '.$localizacion);
+                            }
+                            $em = $this->getDoctrine()->getManager();
+                            foreach ($partEliminados as $partEliminado) 
+                            {
+                                if (!is_null($partEliminado)) 
+                                {
+                                    $em = $this->getDoctrine()->getManager();
+                                    $em->remove($partEliminado);
+                                    $em->flush();
+                                    $logger->info('eliminado el participante');
+                                }
+                                else
+                                {
+                                    $logger->error('fallo al recuparar los reducidos en '.$localizacion);
+                                }
+                            }
+                        }//fin mas de 1 reducido
+                        
+                    }//fin reducido
+
+                    return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
+                }//fin clic on save
+        }//fin form valido
 
         
          return $this->render('default/index.html.twig',
@@ -184,7 +208,7 @@ class DefaultController extends Controller
                 )           
                             );
       
-    }
+    }//fin indexAction
 
 
 
