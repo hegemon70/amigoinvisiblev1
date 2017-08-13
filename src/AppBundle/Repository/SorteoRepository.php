@@ -19,4 +19,13 @@ class SorteoRepository extends \Doctrine\ORM\EntityRepository
        ->setMaxResults(1)
        ->getSingleResult();
   }
+
+  public function findByCodigoSorteoId($codigo)
+  {
+       return $this->getEntityManager()
+       ->createQuery('SELECT s.id FROM AppBundle:Sorteo s WHERE ( s.codigoSorteo = ?1)ORDER BY s.id DESC')
+       ->setParameter(1,$codigo)
+       ->setMaxResults(1)
+       ->getSingleResult();
+  }
 }

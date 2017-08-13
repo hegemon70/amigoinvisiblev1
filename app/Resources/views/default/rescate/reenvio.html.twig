@@ -1,0 +1,46 @@
+{# app\Resources\views\default\rescate\reenvio.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+   <div>
+    
+       
+                 
+        <h1>ESCRIBE EL E-MAIL DE TU AMIGO Y REENVIALO</h1>
+    <h4>esta persona recibira en este e-mail el mismo nombre del amigo que le habia tocado</h4>
+
+     <table class="table table-hover col-md-12">
+                    <thead>
+                        <tr>
+                            <th>nombre</th>
+                            <th>correo</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                         {% form_theme form.participantes 'default/themes/reenvio-theme.html.twig' 
+                                %}
+                  {{form_row(form.participantes)}}
+
+                  {#  {% for participante in participantes %}
+                   <tr>
+                       
+                        <td>{{ participante.nombre }}</td>
+                        <td>{{ participante.correo }}</td>
+                       <td>{{ participante.asignado }}</td>
+                        <td>{{ participante.sorteo }}</td> 
+                    </tr>
+                   {% endfor %}
+                    #}
+                     
+           
+                </tbody>
+                </table>
+   </div>
+   
+       
+
+ 
+                       
+{% endblock %}

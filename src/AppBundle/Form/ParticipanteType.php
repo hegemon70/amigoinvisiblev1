@@ -43,7 +43,7 @@ class ParticipanteType extends AbstractType
                     ['attr'=>['class'=>'my-position',],
                     ])
                 //->add('add', SubmitType::class, array('attr'=>array('class'=>'btn-sm btn-default','title'=>"añadir Participante")))
-                //->add('save', SubmitType::class, array('label'=> 'Guerdar','attr'=>array('class'=>'btn btn-default')))
+                ->add('save', SubmitType::class, array('label'=> 'enviar','attr'=>array('class'=>'btn btn-default')))
                 //-> add('cancel', SubmitType::class, array('label'=>'Cnacelar','attr'=>array('formnovalidate'=>'formnovalidate','class'=>'btn btn-default')))
                 //->addEventListener(FormEvents::POST_SET_DATA,
                 //   array($this,'onPostSetData'))

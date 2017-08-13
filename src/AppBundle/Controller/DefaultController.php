@@ -37,7 +37,7 @@ class DefaultController extends Controller
          $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
          $recuperado=$request->query->get('recuperado');//en caso de volver pag recuperado
         // $arrOldPosiciones[]=null;
-         if ($devuelto Or $recuperado)
+         if ($devuelto)
          {
 
             $id=$request->query->get('idSorteo');     
@@ -47,11 +47,6 @@ class DefaultController extends Controller
                 $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
                 $sorteoOld=$sorteos_rep->findOneById($id);
                 $codigoOld=$sorteoOld->getCodigoSorteo();
-                if ($recuperado) 
-                {
-                   $asuntoOld=$sorteoOld->getAsunto();
-                   $mensajeOld=$sorteoOld->getMensaje();
-                }
                 $numOldPart=count($sorteoOld->getParticipantes());
 
                 $form=$this->createForm(SorteoType::class,$sorteoOld);
@@ -82,23 +77,14 @@ class DefaultController extends Controller
                 
                 $sorteo = $form->getData();
 
-                if($devuelto Or $recuperado)
+                if($devuelto)
                 {   
-                    if ($devuelto) {
+                   
                         $logger->warning('formulario cambiado en default tras volver de sorteo');
-                    }
-                    else
-                    {
-                       $logger->warning('formulario cambiado en default tras volver de recuperado'); 
-                    }
+                    
                    
                     
                     $sorteo->setCodigoSorteo($codigoOld);//coloco al nuevo el codigo anterior
-                    if($recuperado)
-                    {
-                        $sorteo->setAsunto($asuntoOld);
-                        $sorteo->setMensaje($mensajeOld);
-                    }
                                                       
                     $numNewPart=count($sorteo->getParticipantes());
                    
@@ -192,7 +178,7 @@ class DefaultController extends Controller
                                 }
                                 else
                                 {
-                                    $logger->error('fallo al recuparar los reducidos en '.$localizacion);
+                                    $logger->error('fallo al recuperar los reducidos en '.$localizacion);
                                 }
                             }
                         }//fin mas de 1 reducido

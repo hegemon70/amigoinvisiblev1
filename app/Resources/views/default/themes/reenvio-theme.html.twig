@@ -1,0 +1,23 @@
+{# app\Resources\views\default\themes\reenvio-theme.html.twig #}
+{% block Participante_label %}
+{% endblock %}
+{% block ParticipanteType_row %}
+<tr>
+  {{ form_errors(form) }}
+  {{ form_widget(form) }}
+</tr>
+{% endblock %}
+
+{% block ParticipanteType_widget %}
+
+    <td class="col-md-6">
+        {{ form_widget(form.nombre,{'attr':{'disabled':'disabled'}}) }}
+    </td>
+    <td class="col-md-5">
+      {{ form_widget(form.correo) }}
+    </td>
+    <td class="col-md-1 text-right">
+          {{ form_widget(form.save, {'label':'Enviar'}) }} 
+    </td>
+
+{% endblock %}
