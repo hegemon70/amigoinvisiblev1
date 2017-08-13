@@ -18,21 +18,16 @@
                         </tr>
                     </thead>
                     <tbody>
-
+ {#
                          {% form_theme form.participantes 'default/themes/reenvio-theme.html.twig' 
                                 %}
-                  {{form_row(form.participantes)}}
+                  {{form_row(form.participantes)}}#}
+            
 
-                  {#  {% for participante in participantes %}
-                   <tr>
-                       
-                        <td>{{ participante.nombre }}</td>
-                        <td>{{ participante.correo }}</td>
-                       <td>{{ participante.asignado }}</td>
-                        <td>{{ participante.sorteo }}</td> 
-                    </tr>
+                   {% for participante in participantes %}
+                        {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante,'sorteo':sorteo})) }}
                    {% endfor %}
-                    #}
+                    
                      
            
                 </tbody>

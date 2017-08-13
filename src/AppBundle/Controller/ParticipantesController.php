@@ -16,6 +16,36 @@ class ParticipantesController extends Controller
 {
     ///recuperamos constante de default $max = Participante::NUM_PART
 
+     /**
+     * @Route("/reenvioparticipante", name="participante_reenvio")
+     */
+    public function reenvioAction(Request $request,Participante $participante)
+    {
+        $logger=$this->get('logger');
+        $helpers = $this->get('app.helpers');
+        $localizacion=$helpers->dameNombreActionActual($request);
+
+        $form=$this->createForm(ParticipanteType::class,$participante);
+
+         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            // TRATAMOS LA PETICION
+            if($form->get('save')->isClicked())
+            {
+                 $participante = $form->getData();
+                 $helpers->enviaCorreoParticipante(
+
+                    );
+            }
+        }
+
+        return $this->render('default/participante/reenvio.html.twig',
+            array( 'form'=>$form->createView()));
+
+
+    }
     /**
      * @Route("/listar", name="participantes_listar")
      */
@@ -63,6 +93,8 @@ class ParticipantesController extends Controller
                 )           
                             );
     }
+
+
 
 
     /**

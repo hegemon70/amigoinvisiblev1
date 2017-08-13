@@ -77,38 +77,28 @@ class RecuperaController extends Controller
         } 
         catch (Exception $e) 
         {
-           $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion.' con ele error: '.$e.getMessage());
+           $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion.' con el error: '.$e.getMessage());
         }
         
         if(!is_null($sorteo))
         {
           $helpers->logeaUnInt(count($sorteo),"numero de sorteos recuperados: ");
+          $helpers->logeaUnInt($id,"recupero el sorteo con el id: ");
           $id=$sorteo->getId();
-          //$participantes=$sorteo->getParticipantes();
-           //$contador=count($participantes);
+          $participantes=$sorteo->getParticipantes();
+          $contador=count($participantes);
            //if ($contador>0)
            //{
-            $helpers->logeaUnInt($id,"recupero el sorteo con el id: ");
+           
             //return $this->redirectToRoute('reenviar', 'form'=>$form->createView());
         }
         else
         {
           $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion);
         }
-        $form=$this->createForm(SorteoType::class,$sorteo);
-       
 
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) 
-        {
-            if($form->get('save')->isClicked())
-            { 
-              $logger->info('clic en un boton enviar');
-            }
-        }
         return $this->render('default/rescate/reenvio.html.twig',
-            array( 'form'=>$form->createView()
+            array( 'participantes'=>$participantes,'sorteo'=>$sorteo
                 )           
                             );
 

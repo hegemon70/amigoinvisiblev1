@@ -28,6 +28,58 @@ class Helpers {
     public function hola(){
         return "Hola desde el servicio";
     }
+
+
+    public function enviamosCorreosSorteo(Sorteo $sorteo)
+    {
+        
+        $participantes=$sorteo->getParticipantes();
+
+        foreach ($participantes as $participante) 
+        {
+            self::enviaCorreoParticipante(
+                $participante->getNombre(),
+                $participante->getCorreo(),
+                $participante->getAsignado(),
+                $sorteo->getAsunto(),
+                $sorteo->getMensaje()
+                );
+        }
+       
+     
+        
+}
+
+ public function enviaCorreoParticipante($nombre,$correo,$asignado,$asunto,$mensaje)
+ {
+    $enviador=Sorteo::ENVIADOR;
+    //$transporter = new \Swift_SmtpTransport('smtp-relay.gmail.com');
+        $transporter = new \Swift_SmtpTransport('aspmx.l.google.com');
+        //$transporter = new \Swift_SmtpTransport('smtp.gmail.com');
+        $mailer = new \Swift_Mailer($transporter);
+       
+ 
+          try {
+                $mensaje = (new \Swift_Message($asunto));
+                $mensaje->setFrom($enviador);
+                $mensaje->setTo($correo);
+                $mensaje->setBody('prueba'
+                  /*
+                      $this->renderView(
+                        'default/Email.html.twig',
+                        array('asunto' => $strAsunto),
+                        'text/html'*/
+                  );
+             $test=$mailer->send($mensaje);
+             $this->logger->warning('enviado mensaje a: '.$strEmailDestino.' test tiene valor: '.$test);
+          } catch (Exception $e) {
+              $this->logger->error('fallo al enviar'.$strEmailDestino." ".$e->getMessage());
+          }
+            
+            // return $this->render('default/Email.html.twig',array('asunto' => $strAsunto));
+      
+ }
+
      
     public function existeSesionActualGuardada()
     {
