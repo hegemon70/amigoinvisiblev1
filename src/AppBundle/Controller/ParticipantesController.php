@@ -41,23 +41,42 @@ class ParticipantesController extends Controller
                 $sorteo=$request->get('sorteo');
                 $participante = $form->getData();
                 //enviaCorreoParticipante($nombre,$correo,$asignado,$asunto,$mensaje)
-                $helpers->enviaCorreoParticipante(
+                $resultado=$helpers->enviaCorreoParticipante(
                     $participante->getNombre(),
                     $participante->getCorreo(),
                     $participante->getAsignado(),
                     $sorteo->getAsunto(),
                     $sorteo->getMensaje()
                 );
-                $logger->info('enviado el correo para el participante '.$participante.' desde '.$localizacion.' ');
+                if ($resultado > 0) //0 fallo de envio
+                {
+                    $strMensaje='enviado el correo para el participante '.$participante.' desde '.$localizacion.' ';
+                     $logger->info($strMensaje);
+
+                      $strMensaje="enviado";
+                         $this->get('enviado')->getFlashBag()->add("mensaje",$strMensaje);
+                }
+                else
+                {
+                     $strMensaje='fallo en envio del correo para el participante '.$participante.' desde '.$localizacion.' ';
+                    $logger->error($strMensaje);
+
+                         $this->get('no_enviado')->getFlashBag()->add("mensaje",$strMensaje);
+                }
+               
                 //TODO SALVAR EL CAMBIO EN PARTICIPANTE
                 $em = $this->getDoctrine()->getManager();
                         $em->persist($participante);
                         $em->flush();
                         $logger->warning('Participante guardado desde '.$localizacion);
                 //TODO MOSTRARLO REFRESCANDO PANTALLA
+                        /*
                  $form=$this->createForm(SorteoType::class,$sorteo);
                return $this->render('default/rescate/reenvio.html.twig',
                 array( 'form'=>$form->createView()));
+*/
+
+               
         
             }
         }

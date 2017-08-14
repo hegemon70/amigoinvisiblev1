@@ -30,21 +30,33 @@ class RecuperaController extends Controller
       {
         	if($form->get('save')->isClicked())
         	{	
-          		$logger->info('clic en boton recuperar');
-          		$codSorteo=$form->getData()->getCodigoSorteo();
-
-          		$em = $this->getDoctrine()->getManager();
-              $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
-              $id=$sorteos_rep->findByCodigoSorteoId($codSorteo);
-              if(is_null($sorteo))
-              {
-                $strMensaje="codigo no valido o no encontrado";
-                         $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
-              }
-              else
-              {
-                return $this->redirectToRoute('reenviar', array('idSorteo'=>$id));
-              }
+        		$logger->info('clic en boton recuperar');
+        		$codSorteo=$form->getData()->getCodigoSorteo();
+            $esNumerico=is_numeric($codSorteo);
+            $tiene12Digitos=(strlen($codSorteo)==12)?true:false;
+          
+            if ($esNumerico&& ($tiene12Digitos)) 
+            {
+                
+                $em = $this->getDoctrine()->getManager();
+                $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
+                $id=$sorteos_rep->findByCodigoSorteoId($codSorteo);
+                if(is_null($id))
+                {
+                  $strMensaje="codigo no valido o no encontrado";
+                           $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
+                }
+                else
+                {
+                 // return $this->redirectToRoute('reenviar', array('id'=>$id));
+                  return $this->redirectToRoute('reenviar', $id);
+                }
+            }
+            else
+            {
+              $strMensaje="codigo no valido o no encontrado";
+                           $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
+            }
           }
           else
           {
@@ -68,7 +80,7 @@ class RecuperaController extends Controller
         $localizacion=$helpers->dameNombreActionActual($request);
         $logger->info('entramos en '.$localizacion);
 
-        $id=$request->query->get('idSorteo');
+        $id=$request->query->get('id');
 
         try {
           $em = $this->getDoctrine()->getManager();
@@ -87,10 +99,18 @@ class RecuperaController extends Controller
           $id=$sorteo->getId();
           $participantes=$sorteo->getParticipantes();
           $contador=count($participantes);
-           //if ($contador>0)
-           //{
-           
-            //return $this->redirectToRoute('reenviar', 'form'=>$form->createView());
+           $form=$this->createForm(SorteoType::class,$sorteo);
+
+           $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid()) 
+            {
+                if($form->get('cancel')->isClicked())
+                {
+                  return $this->redirectToRoute('recuperar');
+                 
+                }
+            }
         }
         else
         {
@@ -98,7 +118,9 @@ class RecuperaController extends Controller
         }
 
         return $this->render('default/rescate/reenvio.html.twig',
-            array( 'participantes'=>$participantes,'sorteo'=>$sorteo
+            array('form'=>$form->createView(),
+             'participantes'=>$participantes,
+             'sorteo'=>$sorteo
                 )           
                             );
 

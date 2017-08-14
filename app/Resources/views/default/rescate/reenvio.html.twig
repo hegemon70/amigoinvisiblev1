@@ -9,29 +9,25 @@
         <h1>ESCRIBE EL E-MAIL DE TU AMIGO Y REENVIALO</h1>
     <h4>esta persona recibira en este e-mail el mismo nombre del amigo que le habia tocado</h4>
 
+  
      <table class="table table-hover col-md-12">
-                    <thead>
-                        <tr>
-                            <th>nombre</th>
-                            <th>correo</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
- {#
-                         {% form_theme form.participantes 'default/themes/reenvio-theme.html.twig' 
-                                %}
-                  {{form_row(form.participantes)}}#}
-            
-
-                   {% for participante in participantes %}
-                        {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante,'sorteo':sorteo})) }}
-                   {% endfor %}
-                    
-                     
-           
-                </tbody>
-                </table>
+        <thead>
+          <tr>
+            <th>nombre</th>
+            <th>correo</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for participante in participantes %}
+            {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante,'sorteo':sorteo})) }}
+          {% endfor %}
+        </tbody>
+    </table>
+                <div>
+               {{form_widget(form.cancel)}}
+                </div>
+                  
    </div>
    
        

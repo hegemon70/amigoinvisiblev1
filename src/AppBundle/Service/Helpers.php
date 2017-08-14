@@ -70,14 +70,14 @@ class Helpers {
                         array('asunto' => $strAsunto),
                         'text/html'*/
                   );
-             $test=$mailer->send($mensaje);
+             $result=$mailer->send($mensaje);
              $this->logger->warning('enviado mensaje a: '.$strEmailDestino.' test tiene valor: '.$test);
           } catch (Exception $e) {
               $this->logger->error('fallo al enviar'.$strEmailDestino." ".$e->getMessage());
           }
             
             // return $this->render('default/Email.html.twig',array('asunto' => $strAsunto));
-      
+      return $result;
  }
 
      
