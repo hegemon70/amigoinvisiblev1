@@ -35,7 +35,7 @@ class DefaultController extends Controller
         $numPart=Participante::NUM_PART;// NUM_PART en entity       Participante 
 
          $devuelto=$request->query->get('devuelto');//en caso de volver pag sorteo
-         $recuperado=$request->query->get('recuperado');//en caso de volver pag recuperado
+         //$recuperado=$request->query->get('recuperado');//en caso de volver pag recuperado
         // $arrOldPosiciones[]=null;
          if ($devuelto)
          {
@@ -68,7 +68,8 @@ class DefaultController extends Controller
 
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
             //TODO TRATAMOS LA PETICION
             if($form->get('save')->isClicked())
             {
@@ -200,11 +201,6 @@ class DefaultController extends Controller
                             );
       
     }//fin indexAction
-
-
-
-
-
-   
+ 
    
 }

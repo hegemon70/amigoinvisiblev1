@@ -52,7 +52,12 @@ class SorteoType extends AbstractType
                     ))
 
                 ->add('save', SubmitType::class, array('label' => 'Guardar', 'attr'=>array('class'=>'btn btn-default')))
-                 -> add('cancel', SubmitType::class, array('label'=>'Cancelar','attr'=>array('formnovalidate'=>'formnovalidate','class'=>'btn btn-default')));
+                 -> add('cancel', SubmitType::class, array('label'=>'Cancelar',
+                    'attr'=>array(
+                        'formnovalidate'=>'formnovalidate',
+                        'class'=>'btn btn-default'
+                                )
+                                                            ));
     }
     
     /**

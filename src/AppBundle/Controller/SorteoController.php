@@ -22,19 +22,12 @@ class SorteoController extends Controller
     	$em = $this->getDoctrine()->getManager();
         $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
         $sorteo=$sorteos_rep->findOneById($id);
+        $codigo=$sorteo->getCodigoSorteo();
 
         if (!is_null($sorteo))//si sorteo recuperado
         {
             $logger->info('sorteo: '.$sorteo.'sin asunto ni mensaje');
         }
-        /*
-         $arrPosiciones=$helpers->dameArrayPosiciones($sorteo);
-        if(is_null($arrPosiciones))
-        {
-            $logger->warning('arrPosiciones esta a Null en sorteo');
-        }
-       */
-
 
     	$form=$this->createForm(SorteoType::class,$sorteo);
     	$form->handleRequest($request);
@@ -45,6 +38,7 @@ class SorteoController extends Controller
             if($form->get('save')->isClicked())
             {
                 $sorteo=$form->getData();
+                $sorteo->setCodigoSorteo($codigo);//le planto codigo anterior
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($sorteo);
                 $em->flush();
@@ -53,13 +47,7 @@ class SorteoController extends Controller
             }
             else
             {
-                /*
-                if(is_null($arrPosiciones))
-                {
-                    $logger->warning('arrPosiciones esta a Null en sorteo');
-                }*/
-      
-               // $request->getSession()->set('arrPosiciones',$arrPosiciones);
+
                  return $this->redirectToRoute('homepage', array('devuelto' => true,'idSorteo'=>$id)); 
             }
         }

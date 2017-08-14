@@ -35,21 +35,21 @@ class RecuperaController extends Controller
             $esNumerico=is_numeric($codSorteo);
             $tiene12Digitos=(strlen($codSorteo)==12)?true:false;
           
-            if ($esNumerico&& ($tiene12Digitos)) 
+            if ($esNumerico && $tiene12Digitos) 
             {
                 
                 $em = $this->getDoctrine()->getManager();
                 $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
-                $id=$sorteos_rep->findByCodigoSorteoId($codSorteo);
-                if(is_null($id))
+                $idSorteo=$sorteos_rep->findByCodigoSorteoId($codSorteo);
+                if(is_null($idSorteo))
                 {
                   $strMensaje="codigo no valido o no encontrado";
                            $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
                 }
                 else
                 {
-                 // return $this->redirectToRoute('reenviar', array('id'=>$id));
-                  return $this->redirectToRoute('reenviar', $id);
+                  //return $this->redirectToRoute('recuperar_reenviar',array('id'=>$idSorteo));
+                  return $this->redirectToRoute('recuperar_reenviar', $idSorteo);
                 }
             }
             else
@@ -71,18 +71,19 @@ class RecuperaController extends Controller
     }
 
     /**
-     * @Route("/reenviar", name="reenviar")
+     * @Route("/reenviar/{id}", name="recuperar_reenviar")
      */
-    public function reenviarAction(Request $request)
+    public function reenviarAction(Request $request,$id)
     {
         $logger=$this->get('logger');
         $helpers = $this->get('app.helpers');
         $localizacion=$helpers->dameNombreActionActual($request);
         $logger->info('entramos en '.$localizacion);
 
-        $id=$request->query->get('id');
-
-        try {
+        //$id=$request->query->get('id');
+        var_dump($id);
+        try 
+        {
           $em = $this->getDoctrine()->getManager();
           $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
           $sorteo=$sorteos_rep->find($id);
@@ -91,15 +92,15 @@ class RecuperaController extends Controller
         {
            $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion.' con el error: '.$e.getMessage());
         }
-        
+        /*
         if(!is_null($sorteo))
         {
           $helpers->logeaUnInt(count($sorteo),"numero de sorteos recuperados: ");
-          $helpers->logeaUnInt($id,"recupero el sorteo con el id: ");
-          $id=$sorteo->getId();
+          //$helpers->logeaUnInt($id,"recupero el sorteo con el id: ");
+          //$id=$sorteo->getId();
           $participantes=$sorteo->getParticipantes();
-          $contador=count($participantes);
-           $form=$this->createForm(SorteoType::class,$sorteo);
+          //$contador=count($participantes);
+          $form=$this->createForm(SorteoType::class,$sorteo);
 
            $form->handleRequest($request);
 
@@ -107,20 +108,36 @@ class RecuperaController extends Controller
             {
                 if($form->get('cancel')->isClicked())
                 {
+                  $logger->info('pulsado boton cancel en'.$localizacion);
                   return $this->redirectToRoute('recuperar');
                  
                 }
             }
+
         }
         else
         {
           $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion);
         }
+*/  
+        $form=$this->createForm(SorteoType::class,$sorteo);
+
+         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            if($form->get('cancel')->isClicked())
+            {
+              $logger->info('pulsado boton cancel en'.$localizacion);
+              return $this->redirectToRoute('recuperar');
+             
+            }
+        }
 
         return $this->render('default/rescate/reenvio.html.twig',
-            array('form'=>$form->createView(),
-             'participantes'=>$participantes,
-             'sorteo'=>$sorteo
+            array('form'=>$form->createView()
+              // ,'participantes'=>$participantes
+              // ,'sorteo'=>$sorteo
                 )           
                             );
 

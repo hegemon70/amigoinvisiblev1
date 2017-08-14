@@ -19,8 +19,10 @@
           </tr>
         </thead>
         <tbody>
-          {% for participante in participantes %}
+          {% for participante in form.participantes %}
+          {#
             {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante,'sorteo':sorteo})) }}
+          #}       
           {% endfor %}
         </tbody>
     </table>

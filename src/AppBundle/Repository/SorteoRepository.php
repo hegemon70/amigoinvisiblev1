@@ -17,7 +17,7 @@ class SorteoRepository extends \Doctrine\ORM\EntityRepository
        ->createQuery('SELECT s FROM AppBundle:Sorteo s WHERE ( s.codigoSorteo = ?1)ORDER BY s.id DESC')
        ->setParameter(1,$codigo)
        ->setMaxResults(1)
-       ->getSingleResult();
+       ->getOneOrNullResult();
   }
 
   public function findByCodigoSorteoId($codigo)
@@ -26,6 +26,6 @@ class SorteoRepository extends \Doctrine\ORM\EntityRepository
        ->createQuery('SELECT s.id FROM AppBundle:Sorteo s WHERE ( s.codigoSorteo = ?1)ORDER BY s.id DESC')
        ->setParameter(1,$codigo)
        ->setMaxResults(1)
-       ->getSingleResult();
+       ->getOneOrNullResult();
   }
 }
