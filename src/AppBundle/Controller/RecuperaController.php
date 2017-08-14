@@ -87,8 +87,7 @@ class RecuperaController extends Controller
           $id=$sorteo->getId();
           $participantes=$sorteo->getParticipantes();
           $contador=count($participantes);
-           //if ($contador>0)
-           //{
+       
            
             //return $this->redirectToRoute('reenviar', 'form'=>$form->createView());
         }

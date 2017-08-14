@@ -25,19 +25,40 @@ class ParticipantesController extends Controller
         $helpers = $this->get('app.helpers');
         $localizacion=$helpers->dameNombreActionActual($request);
 
+        $logger->info('mostrando participante desde '.$localizacion);
+
         $form=$this->createForm(ParticipanteType::class,$participante);
 
          $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) 
         {
+            $logger->info('pulsado el enviar desde '.$localizacion.'');
             // TRATAMOS LA PETICION
             if($form->get('save')->isClicked())
             {
-                 $participante = $form->getData();
-                 $helpers->enviaCorreoParticipante(
-
-                    );
+                $logger->info('pulsado el enviar desde '.$localizacion.' valido');
+                $sorteo=$request->get('sorteo');
+                $participante = $form->getData();
+                //enviaCorreoParticipante($nombre,$correo,$asignado,$asunto,$mensaje)
+                $helpers->enviaCorreoParticipante(
+                    $participante->getNombre(),
+                    $participante->getCorreo(),
+                    $participante->getAsignado(),
+                    $sorteo->getAsunto(),
+                    $sorteo->getMensaje()
+                );
+                $logger->info('enviado el correo para el participante '.$participante.' desde '.$localizacion.' ');
+                //TODO SALVAR EL CAMBIO EN PARTICIPANTE
+                $em = $this->getDoctrine()->getManager();
+                        $em->persist($participante);
+                        $em->flush();
+                        $logger->warning('Participante guardado desde '.$localizacion);
+                //TODO MOSTRARLO REFRESCANDO PANTALLA
+                 $form=$this->createForm(SorteoType::class,$sorteo);
+               return $this->render('default/rescate/reenvio.html.twig',
+                array( 'form'=>$form->createView()));
+        
             }
         }
 
