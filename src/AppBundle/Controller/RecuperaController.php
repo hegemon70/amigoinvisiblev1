@@ -49,7 +49,8 @@ class RecuperaController extends Controller
                 else
                 {
                   //return $this->redirectToRoute('recuperar_reenviar',array('id'=>$idSorteo));
-                  return $this->redirectToRoute('recuperar_reenviar', $idSorteo);
+                  //return $this->redirectToRoute('sorteo_reenviar',array('id'=>$idSorteo));
+                  return $this->redirectToRoute('sorteo_reenviar', $idSorteo);
                 }
             }
             else
@@ -70,9 +71,7 @@ class RecuperaController extends Controller
                     
     }
 
-    /**
-     * @Route("/reenviar/{id}", name="recuperar_reenviar")
-     */
+/*
     public function reenviarAction(Request $request,$id)
     {
         $logger=$this->get('logger');
@@ -120,12 +119,13 @@ class RecuperaController extends Controller
           $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion);
         }
 */  
-        $form=$this->createForm(SorteoType::class,$sorteo);
+ /*       $form=$this->createForm(SorteoType::class,$sorteo);
 
-         $form->handleRequest($request);
+        $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) 
         {
+          $logger->info('isSubmitted() && $form->isValid pasado en'.$localizacion);
             if($form->get('cancel')->isClicked())
             {
               $logger->info('pulsado boton cancel en'.$localizacion);
@@ -141,5 +141,5 @@ class RecuperaController extends Controller
                 )           
                             );
 
-    }
+    }*/
 }

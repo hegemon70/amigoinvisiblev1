@@ -150,7 +150,7 @@ class Sorteo
 
          //Metodo MAGICO creado para devolver el nombre 
     public function __toString() {
-        $format='%.0u';
+        $format='%.0f';
         return sprintf($format,$this->codigoSorteo);
     }
 

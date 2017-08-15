@@ -56,5 +56,54 @@ class SorteoController extends Controller
                          	));
        
     }
+    /**
+     * @Route("/reenviar/{id}", name="sorteo_reenviar")
+     */
+    public function reenviarAction(Request $request,$id)
+    {
+        $logger=$this->get('logger');
+        $helpers = $this->get('app.helpers');
+        $localizacion=$helpers->dameNombreActionActual($request);
+        $logger->warning('entramos en '.$localizacion);
+        /*         
+        try 
+        {
+          $em = $this->getDoctrine()->getManager();
+          $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
+          $sorteo=$sorteos_rep->find($id);
+          $logger->warning('recuperado el sorteo '.$sorteo);
+        } 
+        catch (Exception $e) 
+        {
+           $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion.' con el error: '.$e.getMessage());
+        }
+*/
+           $sorteo=new Sorteo();
+        $form=$this->createForm(SorteoType::class,$sorteo);
+         
+
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted()) 
+        {    
+            $logger->warning('se submitte');
+            if ($form->isValid()) {
+                $logger->warning('se valida');
+            }
+
+            $sorteo = $form->getData();
+            $logger->warning('hasta aqui llegamos');
+            //TODO TRATAMOS LA PETICION
+            if($form->get('cancel')->isClicked())
+            {
+
+                 $logger->warning('clic en boton volver'); 
+                return $this->redirectToRoute('recuperar');  
+            }
+        }
+
+         return $this->render('default/sorteo/reenvio.html.twig',
+            array('form'=>$form->createView()));
+    }
 }
 
