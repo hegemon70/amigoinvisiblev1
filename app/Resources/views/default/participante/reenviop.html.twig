@@ -24,6 +24,7 @@
  	 {{form_widget(form.save)}} {#si no uso theme#}
  	</td> {#si no uso theme#}
  </tr>{#si no uso theme#}
+  {{ form_row(form._token) }}
 {{ form_end(form,{'render_rest':false}) }}
 {% endblock %}
 

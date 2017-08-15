@@ -19,8 +19,7 @@ class ParticipantesController extends Controller
      /**
      * @Route("/reenvioparticipante", name="participante_reenvio")
      */
-    public function reenvioAction(Request $request,Participante $participante)
-        //,Sorteo $sorteo)
+    public function reenvioAction(Request $request,Participante $participante,Sorteo $sorteo)
     {
         $logger=$this->get('logger');
         $helpers = $this->get('app.helpers');
@@ -30,29 +29,36 @@ class ParticipantesController extends Controller
 
         $form=$this->createForm(ParticipanteType::class,$participante);
 
-           //https://stackoverflow.com/questions/42600672/symfony3-embedded-controller-with-form
-            $request = $this->get('request_stack')->getMasterRequest();    
-         $form->handleRequest($request);
-
-      
-       
-       // var_dump($request);
-        if ($form->isSubmitted() && $form::isValid()) 
+    
+/*
+        if($request->isMethod('POST'))
         {
+            $logger->info('hemos pulsado un enviar '.$localizacion);
+        }
+*/
+           //https://stackoverflow.com/questions/42600672/symfony3-embedded-controller-with-form
+      // $request = $this->get('request_stack')->getMasterRequest();  //recupero la peticion padre  
+       // $form->handleRequest($request);
+
+       // var_dump($request);
+        /*
+       if ($form->isSubmitted()) 
+       {
             $logger->info('pulsado el enviar desde '.$localizacion.'');
+
+            $participante = $form->getData();
+
+            var_dump($participante->getCorreo());
+*/
             // TRATAMOS LA PETICION
-            if($form->get('save')->isClicked())
-            {
-
+           // if($form->get('save')->isClicked())
+           // {
                 //is possible submit "embedded controllers" symfony
-
-                
-
-                //https://stackoverflow.com/questions/25007478/processing-symfony-form-in-embedded-controller
-                $logger->info('pulsado el enviar desde '.$localizacion.' valido');
+                //$logger->info('pulsado el enviar desde '.$localizacion.' valido');
                 //$sorteo=$request->get('sorteo');
-                $correo = $form->getData();//solo recibe el correo en este caso
-                $participante->setCorreo($correo);
+           //    $algo = $form->getData();//solo recibe el correo en este caso
+            //   var_dump($algo);
+                //$participante->setCorreo($correo);
                 //enviaCorreoParticipante($nombre,$correo,$asignado,$asunto,$mensaje)
                 // $resultado=$helpers->enviaCorreoParticipante(
                 //     $participante->getNombre(),
@@ -79,13 +85,16 @@ class ParticipantesController extends Controller
                 // }
                
                 //TODO SALVAR EL CAMBIO EN PARTICIPANTE
+                /*
                 $em = $this->getDoctrine()->getManager();
                         $em->persist($participante);
                         $em->flush();
-                        $logger->warning('Participante guardado desde '.$localizacion);
-                 return $this->render('default/index.html.twig');
-            }
-        }
+                        $logger->warning('Participante guardado desde '.$localizacion);*/
+
+                // return $this->render('default/index.html.twig');
+            //}
+       // }//end form submmited
+        /*
         else
         {
             if($form->isSubmitted()){
@@ -93,17 +102,11 @@ class ParticipantesController extends Controller
             }
             else{
                 $logger->error('NO entra en enviado');
-            }
-            /*
-            if($form->isValid()){$logger->warning('entra en validado');}
-            else{
-                 $logger->error('NO entra en validado');
-            }*/
-
-                 
+            }       
         }
+        */
 
-        return $this->render('default/participante/reenviop.html.twig',array( 'form'=>$form->createView()));
+        return $this->render('default/participante/reenviop.html.twig',array('form'=>$form->createView()));
 
 
     }

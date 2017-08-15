@@ -2,6 +2,14 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+
+  
+{% for message in app.flashes('enviado') %}
+  <div class="alert alert-success">{{ message }}</div>
+{% endfor %}
+{% for message in app.flashes('no_enviado') %}
+  <div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
        <div>
     {#  {{ form_start(form) }} #}
        
@@ -25,9 +33,9 @@
         {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante
         ,'sorteo':sorteo})) }}
         {% endfor %}  #}
- {% for participante in sorteo.participantes %}
-        {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante})) }}
-        {% endfor %} 
+  {% for participante in sorteo.participantes %}
+        {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante,'sorteo':sorteo})) }}
+  {% endfor %} 
    
    </tbody>
     </table>

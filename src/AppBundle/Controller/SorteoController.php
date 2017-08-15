@@ -6,6 +6,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\ParameterBag;
 use AppBundle\Entity\Sorteo;
 use AppBundle\Form\SorteoType;
 
@@ -82,8 +83,33 @@ class SorteoController extends Controller
         $form=$this->createForm(SorteoType::class,$sorteo);
          
 
-        $form->handleRequest($request);
-        
+        //$form->handleRequest($request);
+
+        //NOTE https://symfony.com/doc/current/form/direct_submit.html
+        if($request->isMethod('POST'))
+        {
+            $logger->info('hemos pulsado un enviar '.$localizacion);
+            $form=$form->submit($request->request->get($form->getName()));
+           
+            $participante = $form->getData();
+            /*
+            $logger->warning('hasta aqui llega');
+            foreach ($sorteo->getParticipantes() as $participante) {
+                     $logger->info('participante:'.$participante);
+                }    
+
+
+            if ($form->isSubmitted() && $form->isValid()) {
+                            $logger->warning('hasta aqui llega....');
+                
+            }
+            */
+            $strMensaje='enviado el correo para el participante '.$participante.' desde '.$localizacion.' ';
+                      $logger->info($strMensaje);
+
+            $this->get('enviado')->getFlashBag()->add("mensaje",$strMensaje);
+        }
+        /*
         if ($form->isSubmitted()) 
         {    
             //$logger->info('se submitte');
@@ -92,7 +118,8 @@ class SorteoController extends Controller
             }
 
             $sorteo = $form->getData();
-            
+          
+
             //TODO TRATAMOS LA PETICION
             if($form->get('cancel')->isClicked())
             {
@@ -100,7 +127,13 @@ class SorteoController extends Controller
                  $logger->info('clic en boton volver'); 
                 return $this->redirectToRoute('recuperar');  
             }
+            if($form->get('save')->isClicked())
+            {
+                 $logger->info('clic en boton enviar de un participante'); 
+                 var_dump($sorteo);
+            }
         }
+        */
 
          return $this->render('default/sorteo/reenvio.html.twig',
             array('form'=>$form->createView(),'sorteo'=>$sorteo
