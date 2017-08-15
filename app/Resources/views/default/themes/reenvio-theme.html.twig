@@ -3,8 +3,10 @@
 {% endblock %}
 {% block ParticipanteType_row %}
 <tr>
+  {{ form_start(form) }}
   {{ form_errors(form) }}
   {{ form_widget(form) }}
+  {{ form_end(form,{'render_rest':false}) }}
 </tr>
 {% endblock %}
 

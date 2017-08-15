@@ -1,0 +1,34 @@
+{# app\Resources\views\default\participante\reenviop.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{% for message in app.flashes('enviado') %}
+	<div class="alert alert-success">{{ message }}</div>
+{% endfor %}
+{% for message in app.flashes('no_enviado') %}
+ 	<div class="alert alert-danger">{{ message }}</div>
+{% endfor %}
+
+{# 	{% 
+		form_theme form 'default/themes/reenvio-theme.html.twig' 
+    %} #}
+ {{ form_start(form) }}	
+ <tr> {#si no uso theme#} 	
+ 	<td> {#si no uso theme#}
+ 	 {{form_widget(form.nombre)}} {#si no uso theme#}
+ 	 </td> {#si no uso theme#}
+ 	 <td> {#si no uso theme#}
+ 	 {{form_widget(form.correo)}} {#si no uso theme#}
+ 	 </td> {#si no uso theme#}
+ 	 <td> {#si no uso theme#}
+ 	 {{form_widget(form.save)}} {#si no uso theme#}
+ 	</td> {#si no uso theme#}
+ </tr>{#si no uso theme#}
+{{ form_end(form,{'render_rest':false}) }}
+{% endblock %}
+
+{% block stylesheets %}
+<style>
+   
+</style>
+{% endblock %}

@@ -64,8 +64,8 @@ class SorteoController extends Controller
         $logger=$this->get('logger');
         $helpers = $this->get('app.helpers');
         $localizacion=$helpers->dameNombreActionActual($request);
-        $logger->warning('entramos en '.$localizacion);
-        /*         
+        $logger->info('entramos en '.$localizacion);
+                
         try 
         {
           $em = $this->getDoctrine()->getManager();
@@ -77,8 +77,8 @@ class SorteoController extends Controller
         {
            $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion.' con el error: '.$e.getMessage());
         }
-*/
-           $sorteo=new Sorteo();
+
+          // $sorteo=new Sorteo();
         $form=$this->createForm(SorteoType::class,$sorteo);
          
 
@@ -86,24 +86,25 @@ class SorteoController extends Controller
         
         if ($form->isSubmitted()) 
         {    
-            $logger->warning('se submitte');
+            //$logger->info('se submitte');
             if ($form->isValid()) {
-                $logger->warning('se valida');
+                $logger->info('se valida');
             }
 
             $sorteo = $form->getData();
-            $logger->warning('hasta aqui llegamos');
+            
             //TODO TRATAMOS LA PETICION
             if($form->get('cancel')->isClicked())
             {
 
-                 $logger->warning('clic en boton volver'); 
+                 $logger->info('clic en boton volver'); 
                 return $this->redirectToRoute('recuperar');  
             }
         }
 
          return $this->render('default/sorteo/reenvio.html.twig',
-            array('form'=>$form->createView()));
+            array('form'=>$form->createView(),'sorteo'=>$sorteo
+                ));
     }
 }
 
