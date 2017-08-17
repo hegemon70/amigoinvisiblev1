@@ -89,9 +89,43 @@ class SorteoController extends Controller
         if($request->isMethod('POST'))
         {
             $logger->info('hemos pulsado un enviar '.$localizacion);
-            $form=$form->submit($request->request->get($form->getName()));
+            //https://github.com/symfony/symfony/issues/1358
+            //$formParticipante=$form->submit($request->request->get($form->getName()));
+            //https://github.com/symfony/symfony/issues/13585
+            //$formParticipante=$form->submit($request->request->get($form->getName())['correo']);
+            //https://github.com/symfony/symfony/issues/13585
+            //ZakClayton commented on 14 Apr 2015
+            $cosa=$request->request->all();
+            //$formParticipante=$form->submit($request->request->all());
+            //$cosa=$formParticipante->getData();
+             return $this->render('default/test.html.twig',array('cosa'=>$cosa));
+           // die(var_dump($formParticipante));
            
-            $participante = $form->getData();
+            // $cosa=$formParticipante->getData();
+            //  die(var_dump($cosa));
+            // $logger->info($cosa->getParticipantes()[2]);
+            // }
+           /*
+            $sorteoNew=$formParticipante->getData();
+            //$sorteo = $form->getData();
+            if (is_null($sorteoNew)){
+                $logger->info('sorteo new es null');
+            }
+            else
+            {
+                  $logger->info($sorteoNew->getId());  
+                  $logger->info(count($sorteoNew->getParticipantes()); 
+
+            }
+            $logger->info('datos devueltos: '.$sorteoNew);
+            $arrPar=$sorteoNew->getParticipantes();
+            $logger->info(count($arrPar));
+            foreach ($sorteoNew->getParticipantes() as  $participante) 
+            {
+               $logger->info('participante devueltos: '.$participante);
+            }
+            */
+            //var_dump($participante);
             /*
             $logger->warning('hasta aqui llega');
             foreach ($sorteo->getParticipantes() as $participante) {
@@ -104,10 +138,19 @@ class SorteoController extends Controller
                 
             }
             */
+           // return $this->redirectToRoute('sorteo_reenviar', array('id'=>$id));
+            /*
             $strMensaje='enviado el correo para el participante '.$participante.' desde '.$localizacion.' ';
                       $logger->info($strMensaje);
 
-            $this->get('enviado')->getFlashBag()->add("mensaje",$strMensaje);
+            $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
+*/
+            //$form=$this->createForm(SorteoType::class,$sorteo);
+
+            return $this->render('default/sorteo/reenvio.html.twig',
+            array('form'=>$form->createView(),'sorteo'=>$sorteo
+                ));
+           
         }
         /*
         if ($form->isSubmitted()) 
