@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\ParameterBag;
+use Symfony\Component\HttpFoundation\Session\Flash\AutoExpireFla‌​shBag;
 use AppBundle\Entity\Sorteo;
 use AppBundle\Form\SorteoType;
 
@@ -95,62 +96,55 @@ class SorteoController extends Controller
         if($request->isMethod('POST'))
         {
             $logger->info('hemos pulsado un enviar '.$localizacion);
-            //https://github.com/symfony/symfony/issues/1358
-            //$formParticipante=$form->submit($request->request->
-            //https://github.com/symfony/symfony/issues/13585
+
+            //NOTE https://github.com/symfony/symfony/issues/13585
             //ZakClayton commented on 14 Apr 2015
-            $cosa=$request->request->all();
-            //$formParticipante=$form->submit($request->request->all());
-            //$cosa=$formParticipante->getData();
-             return $this->render('default/test.html.twig',array('cosa'=>$cosa));
-           // die(var_dump($formParticipante));
-           
-            // $cosa=$formParticipante->getData();
-            //  die(var_dump($cosa));
-            // $logger->info($cosa->getParticipantes()[2]);
-            // }
-           /*
-            $sorteoNew=$formParticipante->getData();
-            //$sorteo = $form->getData();
-            if (is_null($sorteoNew)){
-                $logger->info('sorteo new es null');
-            }
-            else
+            $participanteModif=$request->request->all();
+            //busco el participante modificado y el coloco el correo nuevo
+            $intPosModif=$participanteModif['ParticipanteType']['position'];
+            foreach ($sorteo->getParticipantes() as $participante) 
             {
-                  $logger->info($sorteoNew->getId());  
-                  $logger->info(count($sorteoNew->getParticipantes()); 
+                $intPos=$participante->getPosition();
+                if ($intPosModif==$intPos)
+                {
+                    $correo=$participanteModif['ParticipanteType']['correo'];
+                    $participante->setCorreo($correo);
+                    //TODO enviamos correo
+                   $resultado=$helpers->enviaCorreoParticipante(
+                        $participante->getNombre(),
+                        $participante->getCorreo(),
+                        $participante->getAsignado(),
+                        $sorteo->getAsunto(),
+                        $sorteo->getMensaje()
+                    );
+                   //https://swiftmailer.symfony.com/docs/sending.html
+                   //Using the send() Method
+                   if ($resultado>0)
+                   {
+                     //TODO SALVAR EL CAMBIO EN PARTICIPANTE
+                        $em = $this->getDoctrine()->getManager();
+                        $em->persist($participante);
+                        $em->flush();
+                        $logger->warning('Participante guardado desde '.$localizacion);
+                       $strMensaje='enviado el correo para el participante '.$participante.' desde '.$localizacion.' ';
+                       $logger->info($strMensaje);
+                       $this->get('session')->getFlashBag()->add("exito",$strMensaje);
+                   }
+                   else
+                   {
+                         $strMensaje='fallo al enviar el correo para el participante '.$participante.' desde '.$localizacion.' ';
+                         $logger->error($strMensaje);
+                         $this->get('session')->getFlashBag()->add("fallo",$strMensaje);
+                   }
+                   
+                   break;//salgo del bucle
+                }//fin $intPosModif==$intPos
+                 
+            }//fin foreach
+            
 
-            }
-            $logger->info('datos devueltos: '.$sorteoNew);
-            $arrPar=$sorteoNew->getParticipantes();
-            $logger->info(count($arrPar));
-            foreach ($sorteoNew->getParticipantes() as  $participante) 
-            {
-               $logger->info('participante devueltos: '.$participante);
-            }
-            */
-            //var_dump($participante);
-            /*
-            $logger->warning('hasta aqui llega');
-            foreach ($sorteo->getParticipantes() as $participante) {
-                     $logger->info('participante:'.$participante);
-                }    
-
-
-            if ($form->isSubmitted() && $form->isValid()) {
-                            $logger->warning('hasta aqui llega....');
-                
-            }
-            */
-           // return $this->redirectToRoute('sorteo_reenviar', array('id'=>$id));
-            /*
-            $strMensaje='enviado el correo para el participante '.$participante.' desde '.$localizacion.' ';
-                      $logger->info($strMensaje);
-
-            $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
-*/
-            //$form=$this->createForm(SorteoType::class,$sorteo);
-
+           // $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
+            
             return $this->render('default/sorteo/reenvio.html.twig',
             array('form'=>$form->createView(),'sorteo'=>$sorteo
                 ));

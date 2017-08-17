@@ -3,8 +3,12 @@
 
 {% block body %}
    <div>
-    
-       
+             {% for message in app.flashes('exito') %}
+                        <div class="alert alert-success">{{ message }}</div>
+                    {% endfor %}
+              {% for message in app.flashes('fallo') %}
+                        <div class="alert alert-error">{{ message }}</div>
+                    {% endfor %}
                  
         <h1>ESCRIBE EL E-MAIL DE TU AMIGO Y REENVIALO</h1>
     <h4>esta persona recibira en este e-mail el mismo nombre del amigo que le habia tocado</h4>

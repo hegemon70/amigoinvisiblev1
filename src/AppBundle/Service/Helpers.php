@@ -71,12 +71,13 @@ class Helpers {
                         'text/html'*/
                   );
              $result=$mailer->send($mensaje);
-             $this->logger->warning('enviado mensaje a: '.$strEmailDestino.' test tiene valor: '.$test);
+             
           } catch (Exception $e) {
-              $this->logger->error('fallo al enviar'.$strEmailDestino." ".$e->getMessage());
+              $this->logger->error('fallo al enviar'.$correo." ".$e->getMessage());
           }
             
-            // return $this->render('default/Email.html.twig',array('asunto' => $strAsunto));
+            //https://swiftmailer.symfony.com/docs/sending.html
+            //Using the send() Method
       return $result;
  }
 

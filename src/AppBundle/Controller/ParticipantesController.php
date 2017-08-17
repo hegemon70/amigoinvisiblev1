@@ -28,7 +28,7 @@ class ParticipantesController extends Controller
         $logger->info('mostrando participante desde '.$localizacion);
 
         $form=$this->createForm(ParticipanteType::class,$participante);
-
+        /*
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) 
@@ -40,7 +40,7 @@ class ParticipantesController extends Controller
                 $participante=$form->getData();
                 $participante->setPosition(-1);
               }
-        }
+        */
         /*
         else
         {
