@@ -13,7 +13,8 @@
 		form_theme form 'default/themes/reenvio-theme.html.twig' 
     %} #}
  {{ form_start(form) }}	
- <tr> {#si no uso theme#} 	
+ <tr> {#si no uso theme#} 
+ 	 {{form_widget(form.position)}} {#si no uso theme#}
  	<td> {#si no uso theme#}
  	 {{form_widget(form.nombre)}} {#si no uso theme#}
  	 </td> {#si no uso theme#}

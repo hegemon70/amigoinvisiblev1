@@ -72,6 +72,12 @@ class SorteoController extends Controller
           $em = $this->getDoctrine()->getManager();
           $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
           $sorteo=$sorteos_rep->find($id);
+          //marco la position en cada participante
+          $intPos=count($sorteo->getParticipantes());
+          for ($i=0; $i < $intPos ; $i++) { 
+             $sorteo->getParticipantes()[$i]->setPosition($i);
+          }
+      
           $logger->warning('recuperado el sorteo '.$sorteo);
         } 
         catch (Exception $e) 
@@ -90,9 +96,7 @@ class SorteoController extends Controller
         {
             $logger->info('hemos pulsado un enviar '.$localizacion);
             //https://github.com/symfony/symfony/issues/1358
-            //$formParticipante=$form->submit($request->request->get($form->getName()));
-            //https://github.com/symfony/symfony/issues/13585
-            //$formParticipante=$form->submit($request->request->get($form->getName())['correo']);
+            //$formParticipante=$form->submit($request->request->
             //https://github.com/symfony/symfony/issues/13585
             //ZakClayton commented on 14 Apr 2015
             $cosa=$request->request->all();

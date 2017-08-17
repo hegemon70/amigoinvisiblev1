@@ -29,7 +29,23 @@ class ParticipantesController extends Controller
 
         $form=$this->createForm(ParticipanteType::class,$participante);
 
-    
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+            $logger->info('valida en '.$localizacion);
+              if($form->get('save')->isClicked())
+              {
+                $logger->info('detecta click en save en '.$localizacion);
+                $participante=$form->getData();
+                $participante->setPosition(-1);
+              }
+        }
+        /*
+        else
+        {
+            $logger->error('no valida en '.$localizacion);
+        }*/
 /*
         if($request->isMethod('POST'))
         {
