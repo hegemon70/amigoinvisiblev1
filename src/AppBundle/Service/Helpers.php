@@ -29,6 +29,169 @@ class Helpers {
         return "Hola desde el servicio";
     }
 
+    public function gestionaParticipantes($idSorteo)
+    {
+        $sorteado=false;
+        $numNoSorteados=self::dameNumParticipantesSinSortearConIdSorteo($idSorteo);
+        if($numNoSorteados>2)//min para sortear
+        {
+            $arrIdParticipantesOrig=self::dameArrayIdParticipantesConIdSorteo($idSorteo);
+            $arrIdSorteados=self::creaReparto($arrIdParticipantesOrig);
+            self::actualizaParticipantes($idSorteo,$arrIdParticipantesOrig,$arrIdSorteados);
+            $sorteado=true;
+        }
+        else
+        {
+            if($numNoSorteados==0)
+            {
+                $this->logger->alert("participantes ya sorteados");
+                $sorteado=true;
+            }
+            else
+            {
+                if($numNoSorteados==-1)
+                {
+                    $this->logger->error("fallo hereedado en gestionaParticipantes");
+                }
+                else //1 ó 2
+                {
+                    $this->logger->error("no mas de 2 Participantes");
+                }
+            }
+        }
+       return $sorteado; 
+    }
+
+    public function dameNumParticipantesSinSortearConIdSorteo($idSorteo)
+    {   $count=-1;
+        try {
+            $qb = $this->em->createQueryBuilder();
+            $qb->select('count(participante.id)');
+            $qb->from('AppBundle:Participante','participante');
+            $qb->where('participante.asignado is NULL');
+            $qb->andwhere('participante.sorteo = ?1');
+            $qb->setParameter(1,$idSorteo);
+            $count = $qb->getQuery()->getSingleScalarResult();
+            $this->logger->alert('hay '.$count.' sin sortear en el sorteo '.$idSorteo." ");
+        } catch (Exception $e) {
+             $this->logger->error('fallo en dameNumParticipantesSinSortearConIdSorteo '.$e.getMessage());
+        }
+        
+        return $count;
+    }
+
+    public function dameArrayIdParticipantesConIdSorteo($idSorteo)
+    {
+       
+          try {
+           $qb = $this->em->createQueryBuilder();
+            $qb->select('participante.id');
+            $qb->from('AppBundle:Participante','participante');
+            //$qb->where('participante.asignado is NULL');
+            //$qb->andwhere('participante.sorteo = ?1');
+            $qb->where('participante.sorteo = ?1');
+            $qb->setParameter(1,$idSorteo);
+            $idParticipantes = $qb->getQuery()->getArrayResult();
+        } catch (Exception $e) {
+            $idParticipantes=NULL;
+            $this->logger->error('error en dameArrayIdParticipantesConIdSorteo: '.$e->getMessage());
+        }
+        return $idParticipantes;
+    }
+
+    public function creaReparto($arrIds)
+    {   
+        $cuentaVueltas=0;
+        $arrIdsSorteadas=$arrIds;
+        $tam=count($arrIds);
+        do
+        {
+            $cuentaVueltas++;
+            shuffle($arrIdsSorteadas);
+        }
+        while(!self::repartoValido($arrIds,$arrIdsSorteadas));
+        $this->logger->warning('------------------------------------');
+        self::logeaUnArrayDeIntHorizontal($arrIds,"id");
+        self::logeaUnArrayDeIntHorizontal($arrIdsSorteadas,"id");
+        $this->logger->warning('--------------------------------');
+        $this->logger->info('en '.(string)$cuentaVueltas.' loops');  
+        return $arrIdsSorteadas;
+    }
+
+    public function repartoValido($arrOrig,$arrNuevo)
+    { 
+        $valido=true;
+        for ($i=0; $i < count($arrOrig) ; $i++) 
+        { 
+            if ($arrOrig[$i]==$arrNuevo[$i])//si coincide alguna pos
+            {
+                $valido=false;
+                break;
+            } 
+            
+        }
+        return $valido;
+    }
+
+    public function actualizaParticipantes($idSorteo,$arrOrig,$arrReparto)
+    {
+        $exito=true; 
+       
+       for ($i=0; $i < count($arrOrig) ; $i++) 
+       { 
+           if(!self::actualizaParticipante($idSorteo,$arrOrig[$i]['id'],$arrReparto[$i]['id']))
+           {
+                $this->logger->error('NECESARIO ROLLBACK');
+                $exito=false;
+                break;//al haber fallo salimos bucle
+
+                //TODO CONTADOR PARA ELIMINAR LOS CREADOS ANTES
+           }
+    
+
+       }
+        if ($exito)
+        {
+            $this->logger->warning('ACTUALIZADOS CORRECTAMENTE LOS PARTICIPANTES');
+        }       
+
+        return $exito;
+    }
+
+    public function actualizaParticipante($idSorteo,$idPart,$idReceptor)
+    {   
+        $exito=false;
+        $formato='idSorteo: %.0f '; 
+        $mensaje=sprintf($formato,$idSorteo);
+      
+        $formato='idPart: %.0f ';
+        $mensaje.=sprintf($formato,$idPart);
+        
+        $formato='idReceptor: %.0f ';
+        $mensaje.=sprintf($formato,$idReceptor);
+        
+        $this->logger->alert($mensaje); 
+        try 
+        {
+            $em = $this->getDoctrine()->getManager();
+            $qb = $em->createQueryBuilder();
+            $qb->update('AppBundle:Participante', 'p');
+            $qb->set('p.sorteo','?1');
+            $qb->set('p.asignado','?2');
+            $qb->where('p.id = ?3');
+            $qb->setParameter(1,$idSorteo);
+            $qb->setParameter(2,$idReceptor);
+            $qb->setParameter(3,$idPart);
+            $resultado=$qb->getQuery()->execute();
+            $exito=true;
+            $this->logger->info('actualizado '.$resultado);
+        } 
+        catch (Exception $e) 
+        {
+             $this->logger->error('error actualizando partipantes '.$e.getMessage());
+        }  
+         return $exito;
+    }
 
     public function enviamosCorreosSorteo(Sorteo $sorteo)
     {

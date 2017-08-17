@@ -41,11 +41,13 @@ class SorteoController extends Controller
             {
                 $sorteo=$form->getData();
                 $sorteo->setCodigoSorteo($codigo);//le planto codigo anterior
+                $helpers->gestionaParticipantes($sorteo->getId());
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($sorteo);
                 $em->flush();
                 $logger->warning('Sorteo modificado');
                 $idSorteo=$sorteo->getId();
+                return $this->redirectToRoute('paso3',array('id'=>$idSorteo));
             }
             else
             {
