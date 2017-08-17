@@ -7,7 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\ParameterBag;
-use Symfony\Component\HttpFoundation\Session\Flash\AutoExpireFla‌​shBag;
+use Symfony\Component\HttpFoundation\Session\Flash\AutoExpireFlashBag;
 use AppBundle\Entity\Sorteo;
 use AppBundle\Form\SorteoType;
 
@@ -126,15 +126,18 @@ class SorteoController extends Controller
                         $em->persist($participante);
                         $em->flush();
                         $logger->warning('Participante guardado desde '.$localizacion);
-                       $strMensaje='enviado el correo para el participante '.$participante.' desde '.$localizacion.' ';
-                       $logger->info($strMensaje);
-                       $this->get('session')->getFlashBag()->add("exito",$strMensaje);
+                       $strMensaje='enviado el correo para el participante '.$participante;
+                       $this->addFlash('exito',$strMensaje);
+                       $strMensaje.=$strMensaje.' desde '.$localizacion.' ';
+                       $logger->info($strMensaje);                    
                    }
                    else
                    {
                          $strMensaje='fallo al enviar el correo para el participante '.$participante.' desde '.$localizacion.' ';
+                         
+                         $this->addFlash('fallo',$strMensaje);
+                         $strMensaje.=$strMensaje.' desde '.$localizacion.' ';
                          $logger->error($strMensaje);
-                         $this->get('session')->getFlashBag()->add("fallo",$strMensaje);
                    }
                    
                    break;//salgo del bucle
