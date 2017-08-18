@@ -13,14 +13,38 @@ class Paso3Controller extends Controller
 {
 
 	/**
-     * @Route("/envio/{id}", name="paso3")
+     * @Route("/paso3/{id}", name="paso3")
      */
     public function envioAction(Request $request,$id)
     {
 
-    	 $titulo="view Sorteo";
+    	$logger=$this->get('logger');
+        $helpers = $this->get('app.helpers');
+        $localizacion=$helpers->dameNombreActionActual($request);
+
+        $em = $this->getDoctrine()->getManager();
+        $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
+        $sorteo=$sorteos_rep->findOneById($id);
+        $idSorteo=$sorteo->getId();
+        
+        $form=$this->createForm(SorteoType::class,$sorteo);
+    	$form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+
+            if($form->get('save')->isClicked())
+            {
+
+            }
+            else
+            {
+            	 return $this->redirectToRoute('homepage_sorteo',array('id'=>$idSorteo));
+            }
+        }
 
          return $this->render('default/Paso3.html.twig',
-                         array('titulo'=>$titulo));
+                         array( 'form'=>$form->createView()
+                ));
     }
 }

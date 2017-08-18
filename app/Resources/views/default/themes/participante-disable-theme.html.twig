@@ -1,0 +1,25 @@
+{# app\Resources\views\default\themes\participante-disable-theme.html.twig #}
+{% block Participante_label %}
+{% endblock %} 
+{% block ParticipanteType_row %}
+  {{ form_errors(form) }}
+  {{ form_widget(form) }}
+{% endblock %}
+
+{% block ParticipanteType_widget %}
+<tr class="col-12">
+   <td class="col-sm-12 col-md-6 col-xl-3"  >
+    <div class="col-sm-12 col-md-6 col-xl-3" >
+    {{ 
+      form_widget(form.nombre,{'attr':{'disabled':'disabled'}}) 
+    }}  
+    </div>
+  
+       <div class="col-sm-12 col-md-6 col-xl-3" >
+    {{
+      form_widget(form.correo,{'attr':{'disabled':'disabled'}}) 
+    }}
+  </div>
+    </td>
+</tr>
+{% endblock %}

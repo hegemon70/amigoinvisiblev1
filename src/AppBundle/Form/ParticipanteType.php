@@ -32,11 +32,11 @@ class ParticipanteType extends AbstractType
     {
         $builder->add('nombre',TextType::class,array(
             'attr' => array(
-                'class'=>'form-control col-md-5',
+                'class'=>'form-control col-sm-12 col-md-6',
                 'placeholder'=>'Nombre',
 
             )))
-                ->add('correo',EmailType::class,array('attr' => array('class'=>'form-control col-md-5','placeholder'=>'email')))
+                ->add('correo',EmailType::class,array('attr' => array('class'=>'form-control col-sm-12 col-md-6','placeholder'=>'email')))
                 ->add('asignado',HiddenType::class)
                 ->add('idSorteo',HiddenType::class)
                 ->add('position',HiddenType::class,

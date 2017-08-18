@@ -3,7 +3,64 @@
 
 {% block body %}
         
-    <h1>{{titulo}}</h1>
+   {{ form_start(form) }}
+ 
+   {# h2{REVISA TU LISTADO DE AMIGOS...}table>thead>tr>th*3^tbody>tr>td3 #}
+  <header> 
+<h2>REVISA TU LISTADO DE AMIGOS...</h2>
+   </header>
+   <article class="col-sm-12" >
+     <h5><strong>Codigo Sorteo</strong></h5>
+       {{ form_widget(form.codigoSorteo,{'attr':{'disabled':'disabled'}}) }}
+   </article>
+   <article class="col-12">
+       <br><br><br><br>
+   </article>
+<article>
+     <table class="table table-hover col-md-12">
+      {#   <thead>
+          <tr>
+            <th>nombre</th>
+            <th>correo</th>
+          </tr>
+        </thead> #}
+        <tbody>
+            <tr class="col-12">
+                <td>
+          <div class="col-sm-12 col-md-6 col-xl-3">nombre</div>
+            <div class="col-sm-12 col-md-6 col-xl-3">correo</div>  </td>
+            </tr>
+        {# {% for participante in form.participantes %} #}
+            {% form_theme form 'default/themes/participante-disable-theme.html.twig' %}
+               {{form_row(form.participantes)}}
+       {#  {% endfor %} #}
+
+        </tbody>
+    </table>
+</article>
+
+
+{#     <h3>Participantes</h3>
+    <ul class="participante list-unstyled">
+     
+        {% for participante in form.participantes %}
+            <li>{{ form_row(participante.nombre,{'attr':{'disabled':'disabled'}}) }}</li>
+        {% endfor %}
+    </ul> #}
+<article class="col-sm-12 " >
+   <h5><strong>Asunto</strong></h5>
+    {{ form_widget(form.asunto,{'attr':{'disabled':'disabled'}}) }}
+    <h5><strong>Cuerpo Mensaje</strong></h5>
+    {{ form_widget(form.mensaje,{'attr':{'disabled':'disabled'}}) }}
+</article> 
+
+<article class="col-12">
+    {{ form_row(form._token) }}
+    {{ form_widget(form.save, {'label':'enviar correos'}) }}
+    {{ form_widget(form.cancel, {'label':'Volver'}) }}
+    {{ form_end(form,{'render_rest':false}) }}
+</article>
+
  
                        
 {% endblock %}

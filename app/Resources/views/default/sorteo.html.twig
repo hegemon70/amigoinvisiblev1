@@ -2,29 +2,27 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-        <h1>resultado sorteo</h1>
+        <h1>datos sorteo</h1>
         
    {{ form_start(form) }}
  
     {{ form_widget(form.asunto) }}
     {{ form_widget(form.mensaje) }}
 
-
+{# 
     <h3>Participantes</h3>
     <ul class="participante list-unstyled">
-        {# iterate over each existing tag and render its only field: name #}
+
         {% for participante in form.participantes %}
             <li>{{ form_row(participante.nombre,{'attr':{'disabled':'disabled'}}) }}</li>
         {% endfor %}
-    </ul>
+    </ul> 
+#}
     {{ form_row(form._token) }}
-    {{ form_widget(form.save, {'label':'envia_mensajes'}) }}
+    {{ form_widget(form.save, {'label':'paso 3'}) }}
     {{ form_widget(form.cancel, {'label':'Volver'}) }}
     {{ form_end(form,{'render_rest':false}) }}
-
-
- 
-                       
+             
 {% endblock %}
 
 {% block stylesheets %}

@@ -154,17 +154,23 @@ class Helpers {
         $cuentaVueltas=0;
         $arrIdsSorteadas=$arrIds;
         $tam=count($arrIds);
-        do
-        {
-            $cuentaVueltas++;
-            shuffle($arrIdsSorteadas);
+        if ($tam > 2) {
+            do
+            {
+                $cuentaVueltas++;
+                shuffle($arrIdsSorteadas);
+            }
+            while(!self::repartoValido($arrIds,$arrIdsSorteadas));
+            
+            $this->logger->warning('------------------------------------');
+            self::logeaUnArrayDeIntHorizontal($arrIds,"id");
+            self::logeaUnArrayDeIntHorizontal($arrIdsSorteadas,"id");
+            $this->logger->warning('--------------------------------');
+            $this->logger->info('en '.(string)$cuentaVueltas.' loops');  
         }
-        while(!self::repartoValido($arrIds,$arrIdsSorteadas));
-        $this->logger->warning('------------------------------------');
-        self::logeaUnArrayDeIntHorizontal($arrIds,"id");
-        self::logeaUnArrayDeIntHorizontal($arrIdsSorteadas,"id");
-        $this->logger->warning('--------------------------------');
-        $this->logger->info('en '.(string)$cuentaVueltas.' loops');  
+        else
+            self::logeaUnInt($tam,"no es valido por no haber mas que :");
+       
         return $arrIdsSorteadas;
     }
 

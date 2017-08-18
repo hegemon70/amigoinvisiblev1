@@ -34,9 +34,9 @@ class SorteoType extends AbstractType
         $this->logger->info('dibujando formulario Sorteo');
         $logger=$this->logger;
        // $builder->add('codigoSorteo',TextType::class,array('attr' => array('class'=>'form-control','disabled'=>'disabled')))
-        $builder->add('codigoSorteo',TextType::class,array('attr' => array('class'=>'form-control')))
-                ->add('mensaje',TextareaType::class,array('attr' => array('class'=>'form-control','placeholder'=>'Escribe aqui las condiciones del sorteo, el precio maximo del regalo ,la fecha limite')))
-                ->add('asunto',TextType::class,array('attr' => array('class'=>'form-control focusedInput','placeholder'=>'escribe aqui un titulo o asunto para el Sorteo del Amigo Invisible')))
+        $builder->add('codigoSorteo',TextType::class,array('attr' => array('class'=>'form-control col-sm-12 col-md-6')))
+                ->add('mensaje',TextareaType::class,array('attr' => array('class'=>'form-control col-12','placeholder'=>'Escribe aqui las condiciones del sorteo, el precio maximo del regalo ,la fecha limite')))
+                ->add('asunto',TextType::class,array('attr' => array('class'=>'form-control focusedInput col-12','placeholder'=>'escribe aqui un titulo o asunto para el Sorteo del Amigo Invisible')))
                 //->addEventSubscriber(new AddNameFieldListener($logger))
                 //->addEventSubscriber(new AddEmailFieldListener($logger))
                 ->add('participantes', CollectionType::class,
@@ -47,7 +47,7 @@ class SorteoType extends AbstractType
                         'prototype'=> true,
                         'allow_add'=> true,
                         'allow_delete'=> true,
-                        'label'=>'Participantes',
+                        //'label'=>'Participantes',
                         'attr'=>array('class'=>'mis_participantes')
                     ))
 
