@@ -25,6 +25,7 @@ class SorteoController extends Controller
         $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
         $sorteo=$sorteos_rep->findOneById($id);
         $codigo=$sorteo->getCodigoSorteo();
+        $helpers->gestionaParticipantes($sorteo);
 
         if (!is_null($sorteo))//si sorteo recuperado
         {
@@ -41,7 +42,6 @@ class SorteoController extends Controller
             {
                 $sorteo=$form->getData();
                 $sorteo->setCodigoSorteo($codigo);//le planto codigo anterior
-                $helpers->gestionaParticipantes($sorteo->getId());
                 $em = $this->getDoctrine()->getManager();
                 $em->persist($sorteo);
                 $em->flush();
@@ -88,17 +88,19 @@ class SorteoController extends Controller
            $logger->error('fallo al recuperar el sorteo con el id en '.$localizacion.' con el error: '.$e.getMessage());
         }
 
-          // $sorteo=new Sorteo();
         $form=$this->createForm(SorteoType::class,$sorteo);
          
-
-        //$form->handleRequest($request);
+        $form->handleRequest($request);
+        if($form->get('cancel')->isClicked())
+        {
+            $logger->info('clic en boton volver en '.$localizacion);return $this->redirectToRoute('homepage'); 
+        }
 
         //NOTE https://symfony.com/doc/current/form/direct_submit.html
         if($request->isMethod('POST'))
         {
-            $logger->info('hemos pulsado un enviar '.$localizacion);
-
+            $logger->info('hemos pulsado un boton en '.$localizacion);
+           
             //NOTE https://github.com/symfony/symfony/issues/13585
             //ZakClayton commented on 14 Apr 2015
             $participanteModif=$request->request->all();
@@ -147,39 +149,11 @@ class SorteoController extends Controller
                  
             }//fin foreach
             
-
-           // $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
-            
             return $this->render('default/sorteo/reenvio.html.twig',
             array('form'=>$form->createView(),'sorteo'=>$sorteo
                 ));
            
-        }
-        /*
-        if ($form->isSubmitted()) 
-        {    
-            //$logger->info('se submitte');
-            if ($form->isValid()) {
-                $logger->info('se valida');
-            }
-
-            $sorteo = $form->getData();
-          
-
-            //TODO TRATAMOS LA PETICION
-            if($form->get('cancel')->isClicked())
-            {
-
-                 $logger->info('clic en boton volver'); 
-                return $this->redirectToRoute('recuperar');  
-            }
-            if($form->get('save')->isClicked())
-            {
-                 $logger->info('clic en boton enviar de un participante'); 
-                 var_dump($sorteo);
-            }
-        }
-        */
+        }//fin POST
 
          return $this->render('default/sorteo/reenvio.html.twig',
             array('form'=>$form->createView(),'sorteo'=>$sorteo

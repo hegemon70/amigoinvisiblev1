@@ -28,104 +28,11 @@ class ParticipantesController extends Controller
         $logger->info('mostrando participante desde '.$localizacion);
 
         $form=$this->createForm(ParticipanteType::class,$participante);
-        /*
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) 
-        {
-            $logger->info('valida en '.$localizacion);
-              if($form->get('save')->isClicked())
-              {
-                $logger->info('detecta click en save en '.$localizacion);
-                $participante=$form->getData();
-                $participante->setPosition(-1);
-              }
-        */
-        /*
-        else
-        {
-            $logger->error('no valida en '.$localizacion);
-        }*/
-/*
-        if($request->isMethod('POST'))
-        {
-            $logger->info('hemos pulsado un enviar '.$localizacion);
-        }
-*/
-           //https://stackoverflow.com/questions/42600672/symfony3-embedded-controller-with-form
-      // $request = $this->get('request_stack')->getMasterRequest();  //recupero la peticion padre  
-       // $form->handleRequest($request);
-
-       // var_dump($request);
-        /*
-       if ($form->isSubmitted()) 
-       {
-            $logger->info('pulsado el enviar desde '.$localizacion.'');
-
-            $participante = $form->getData();
-
-            var_dump($participante->getCorreo());
-*/
-            // TRATAMOS LA PETICION
-           // if($form->get('save')->isClicked())
-           // {
-                //is possible submit "embedded controllers" symfony
-                //$logger->info('pulsado el enviar desde '.$localizacion.' valido');
-                //$sorteo=$request->get('sorteo');
-           //    $algo = $form->getData();//solo recibe el correo en este caso
-            //   var_dump($algo);
-                //$participante->setCorreo($correo);
-                //enviaCorreoParticipante($nombre,$correo,$asignado,$asunto,$mensaje)
-                // $resultado=$helpers->enviaCorreoParticipante(
-                //     $participante->getNombre(),
-                //     $participante->getCorreo(),
-                //     $participante->getAsignado(),
-                //     $sorteo->getAsunto(),
-                //     $sorteo->getMensaje()
-                // );
-
-                // if ($resultado > 0) //0 fallo de envio
-                // {
-                //     $strMensaje='enviado el correo para el participante '.$participante.' desde '.$localizacion.' ';
-                //      $logger->info($strMensaje);
-
-                //       $strMensaje="enviado";
-                //          $this->get('enviado')->getFlashBag()->add("mensaje",$strMensaje);
-                // }
-                // else
-                // {
-                //      $strMensaje='fallo en envio del correo para el participante '.$participante.' desde '.$localizacion.' ';
-                //     $logger->error($strMensaje);
-
-                //          $this->get('no_enviado')->getFlashBag()->add("mensaje",$strMensaje);
-                // }
-               
-                //TODO SALVAR EL CAMBIO EN PARTICIPANTE
-                /*
-                $em = $this->getDoctrine()->getManager();
-                        $em->persist($participante);
-                        $em->flush();
-                        $logger->warning('Participante guardado desde '.$localizacion);*/
-
-                // return $this->render('default/index.html.twig');
-            //}
-       // }//end form submmited
-        /*
-        else
-        {
-            if($form->isSubmitted()){
-                $logger->warning('entra en enviado');
-            }
-            else{
-                $logger->error('NO entra en enviado');
-            }       
-        }
-        */
-
+      
         return $this->render('default/participante/reenviop.html.twig',array('form'=>$form->createView()));
 
-
     }
+    
     /**
      * @Route("/listar", name="participantes_listar")
      */

@@ -11,14 +11,14 @@
                         <div class="alert alert-error">{{ message }}</div>
                     {% endfor %}
     </div>
-       <div>
-    {#  {{ form_start(form) }} #}
+<div>
+    
        
                  
         <h1>ESCRIBE EL E-MAIL DE TU AMIGO Y REENVIALO</h1>
     <h4>esta persona recibira en este e-mail el mismo nombre del amigo que le habia tocado</h4>
 
-  
+   {{ form_start(form) }}
      <table class="table table-hover col-md-12">
         <thead>
           <tr>
@@ -28,12 +28,8 @@
           </tr>
         </thead>
         <tbody>
-{#   {{dump(sorteo)}} #}
+
  
- 		{# {% for participante in sorteo.participantes %}
-        {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante
-        ,'sorteo':sorteo})) }}
-        {% endfor %}  #}
   {% for participante in sorteo.participantes %}
         {{ render(controller('AppBundle:Participantes:reenvio',{'participante': participante,'sorteo':sorteo})) }}
   {% endfor %} 
@@ -41,8 +37,8 @@
    </tbody>
     </table>
                 <div>
-    {# {{ form_widget(form.cancel, {'label':'Volver'}) }}
-    {{ form_end(form,{'render_rest':false}) }} #}
+    {{ form_widget(form.cancel, {'label':'Volver'}) }}
+    {{ form_end(form,{'render_rest':false}) }}
                 </div>
 </div>
  

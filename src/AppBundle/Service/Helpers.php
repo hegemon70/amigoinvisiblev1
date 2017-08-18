@@ -29,6 +29,58 @@ class Helpers {
         return "Hola desde el servicio";
     }
 
+    public function gestionaParticipantes(Sorteo $sorteo)
+    {
+        $sorteado=false;
+        $arrIdParticipantesOrig=self::dameArrayIdsParticipantes($sorteo);
+        if (count($arrIdParticipantesOrig)>2) {
+            self::logeaUnInt(count($arrIdParticipantesOrig),"numero de ids a repartir");
+            $arrIdSorteados=self::creaReparto($arrIdParticipantesOrig);
+            $sorteado=self::actualizaParticipantes($sorteo,$arrIdParticipantesOrig,$arrIdSorteados);
+        }
+        else
+        {
+            self::logeaUnInt(count($arrIdParticipantesOrig),"numero de ids :");
+            $this->logger->error('numero de ids no valido');
+        }
+        
+        return $sorteado; 
+    }
+
+    public function dameArrayIdsParticipantes(Sorteo $sorteo)
+    {
+        $arrIdsParticipantes=array();
+        self::logeaUnInt(count($sorteo->getParticipantes()),"en dameArrayIdsParticipantes num participantes: ");
+        foreach ($sorteo->getParticipantes() as $participante) 
+        {
+            $this->logger->info('construyendo el array de ids participantes ...');
+            self::logeaUnInt($participante->getId(),"id a colocar :");
+            $arrIdsParticipantes[]=$participante->getId();
+        }
+        return $arrIdsParticipantes;
+    }
+
+    public function actualizaParticipantes(Sorteo $sorteo,$arrOrig,$arrReparto)
+    {
+        $exito=true;
+        try 
+        {
+            for ($i=0; $i < count($arrOrig); $i++)  
+            {
+                $sorteo->getParticipantes()[$i]->setAsignado($arrReparto[$i]);
+            }
+            $this->em->persist($sorteo);
+            $this->em->flush();
+        } 
+        catch (Exception $e) 
+        {
+            $this->logger->error('fallo en actualizaParticipantes '.$e->getMessage());
+            $exito=false;
+        }
+        return $exito;
+    }
+
+/*
     public function gestionaParticipantes($idSorteo)
     {
         $sorteado=false;
@@ -61,7 +113,7 @@ class Helpers {
         }
        return $sorteado; 
     }
-
+*/
     public function dameNumParticipantesSinSortearConIdSorteo($idSorteo)
     {   $count=-1;
         try {
@@ -79,7 +131,7 @@ class Helpers {
         
         return $count;
     }
-
+/*
     public function dameArrayIdParticipantesConIdSorteo($idSorteo)
     {
        
@@ -87,8 +139,6 @@ class Helpers {
            $qb = $this->em->createQueryBuilder();
             $qb->select('participante.id');
             $qb->from('AppBundle:Participante','participante');
-            //$qb->where('participante.asignado is NULL');
-            //$qb->andwhere('participante.sorteo = ?1');
             $qb->where('participante.sorteo = ?1');
             $qb->setParameter(1,$idSorteo);
             $idParticipantes = $qb->getQuery()->getArrayResult();
@@ -98,7 +148,7 @@ class Helpers {
         }
         return $idParticipantes;
     }
-
+*/
     public function creaReparto($arrIds)
     {   
         $cuentaVueltas=0;
@@ -132,7 +182,7 @@ class Helpers {
         }
         return $valido;
     }
-
+/*
     public function actualizaParticipantes($idSorteo,$arrOrig,$arrReparto)
     {
         $exito=true; 
@@ -157,7 +207,8 @@ class Helpers {
 
         return $exito;
     }
-
+*/
+    /*
     public function actualizaParticipante($idSorteo,$idPart,$idReceptor)
     {   
         $exito=false;
@@ -192,7 +243,7 @@ class Helpers {
         }  
          return $exito;
     }
-
+*/
     public function enviamosCorreosSorteo(Sorteo $sorteo)
     {
         

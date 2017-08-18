@@ -48,17 +48,15 @@ class RecuperaController extends Controller
                 }
                 else
                 {
-                  //return $this->redirectToRoute('recuperar_reenviar',array('id'=>$idSorteo));
-                  //return $this->redirectToRoute('sorteo_reenviar',array('id'=>$idSorteo));
                   return $this->redirectToRoute('sorteo_reenviar', $idSorteo);
                 }
-            }
+            }//fin si es numerico y 12
             else
             {
               $strMensaje="codigo no valido o no encontrado";
                            $this->get('session')->getFlashBag()->add("mensaje",$strMensaje);
             }
-          }
+          }//fin click on save
           else
           {
              $logger->info('clic en boton volver'); 
