@@ -35,7 +35,8 @@ class Paso3Controller extends Controller
 
             if($form->get('save')->isClicked())
             {
-
+            	$helpers->enviaCorreosSorteo($sorteo);
+            	return $this->redirectToRoute('sorteo_mostrar',array('id'=>$idSorteo));
             }
             else
             {

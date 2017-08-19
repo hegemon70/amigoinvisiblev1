@@ -250,7 +250,7 @@ class Helpers {
          return $exito;
     }
 */
-    public function enviamosCorreosSorteo(Sorteo $sorteo)
+    public function enviaCorreosSorteo(Sorteo $sorteo)
     {
         
         $participantes=$sorteo->getParticipantes();
@@ -264,15 +264,14 @@ class Helpers {
                 $sorteo->getAsunto(),
                 $sorteo->getMensaje()
                 );
+            $this->logger->warning('correo encviado al participante: '.$participante->getNombre());
         }
-       
-     
-        
-}
+    }
 
  public function enviaCorreoParticipante($nombre,$correo,$asignado,$asunto,$mensaje)
  {
     $enviador=Sorteo::ENVIADOR;
+    $nombreAsignado=self::dameNombreAsignado($asignado);
     //$transporter = new \Swift_SmtpTransport('smtp-relay.gmail.com');
         $transporter = new \Swift_SmtpTransport('aspmx.l.google.com');
         //$transporter = new \Swift_SmtpTransport('smtp.gmail.com');
@@ -283,12 +282,14 @@ class Helpers {
                 $mensaje = (new \Swift_Message($asunto));
                 $mensaje->setFrom($enviador);
                 $mensaje->setTo($correo);
-                $mensaje->setBody('prueba'
-                  /*
+                $mensaje->setBody(
                       $this->renderView(
                         'default/Email.html.twig',
-                        array('asunto' => $strAsunto),
-                        'text/html'*/
+                        array(  'asunto' => $asunto,
+                                'mensaje'=> $mensaje,
+                                'Asignado'=> $nombreAsignado
+                            ),
+                        'text/html')
                   );
              $result=$mailer->send($mensaje);
              
@@ -301,7 +302,17 @@ class Helpers {
       return $result;
  }
 
-     
+    public function dameNombreAsignado(Participante $participante)
+    {
+        $nombreAsignado=null;
+        $participante_repo=$this->em->getRepository("AppBundle:Participante");
+        $participanteAsignado= $participante_repo->findOneBy($participante->getAsignado());
+        if (!is_null($participanteAsignado)) {
+            $nombreAsignado=$participanteAsignado->getNombre;
+        }
+        return $nombreAsignado;
+    }
+
     public function existeSesionActualGuardada()
     {
         

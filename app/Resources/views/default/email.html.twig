@@ -1,0 +1,23 @@
+{# app\Resources\views\default\email.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+   <div>
+    
+     
+    <article id="mensaje">         
+        <h1>Sorteo del Amigo Invisible</h1>
+        {{"now" | date('d/m/y H:i')}}
+        {{sorteo.mensaje}}
+    </article>
+           <div></div>
+           <article id="asignado">
+               Debes hacer un regalo {{asignado}}
+           </article>
+   </div>
+   
+       
+
+ 
+                       
+{% endblock %}

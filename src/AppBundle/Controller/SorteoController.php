@@ -159,5 +159,38 @@ class SorteoController extends Controller
             array('form'=>$form->createView(),'sorteo'=>$sorteo
                 ));
     }
+
+    /**
+     * @Route("/mostrar/{id}", name="sorteo_mostrar")
+     */
+    public function mostrarAction(Request $request,$id)
+    {
+        $logger=$this->get('logger');
+        $helpers = $this->get('app.helpers');
+        $localizacion=$helpers->dameNombreActionActual($request);
+        $logger->info('entramos en '.$localizacion);
+
+        $em = $this->getDoctrine()->getManager();
+        $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
+        $sorteo=$sorteos_rep->findOneById($id);
+        
+        $form=$this->createForm(SorteoType::class,$sorteo);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+
+            if($form->get('save')->isClicked())
+            {
+                $sorteo=$form->getData();
+                return $this->render('default/email.html.twig',
+            array('sorteo'=>$sorteo));
+            }
+        }
+
+        return $this->render('default/sorteo/mostrar.html.twig',
+            array('form'=>$form->createView(),'sorteo'=>$sorteo));
+    }
+
 }
 

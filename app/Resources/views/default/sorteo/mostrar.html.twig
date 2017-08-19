@@ -1,0 +1,41 @@
+{# app\Resources\views\default\sorteo\mostrar.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div id="container">
+<article>
+  <section class="col-sm-1 col-xl-4"></section>
+  <section class="col-sm-10 col-xl-4">
+     <strong>
+         Tu sorteo se ha realizado correctamente y se han enviado todos los emails
+        </strong> 
+  </section>
+
+     <section class="col-sm-12 col-xl-4">
+      ¡IMPORTANTE! Guarda este número. 
+    </section>
+  <section class="col-sm-12 col-xl-4">
+      En caso de que alguien no reciba el e-mail puedas recuperarlo fácilmente:
+    </section>
+  <section class="col-sm-12 col-xl-4">
+        Identificador del sorteo: {{sorteo.codigoSorteo}}
+  </section>
+</article>
+     
+      <article class="col-12">
+    {{ form_start(form) }}
+    {{ form_row(form._token) }}
+    {{ form_widget(form.save, {'label':'test'}) }}
+    {{ form_end(form,{'render_rest':false}) }}
+</article>
+   
+</div>
+
+
+                       
+{% endblock %}
+
+{% block stylesheets %}
+
+{% endblock %}
