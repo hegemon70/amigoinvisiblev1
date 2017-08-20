@@ -264,7 +264,7 @@ class Helpers {
                 $sorteo->getAsunto(),
                 $sorteo->getMensaje()
                 );
-            $this->logger->warning('correo encviado al participante: '.$participante->getNombre());
+            $this->logger->warning('correo enviado al participante: '.$participante->getNombre());
         }
     }
 
@@ -287,7 +287,8 @@ class Helpers {
                         'default/Email.html.twig',
                         array(  'asunto' => $asunto,
                                 'mensaje'=> $mensaje,
-                                'Asignado'=> $nombreAsignado
+                                'Asignado'=> $nombreAsignado,
+                                'showHead'=>false
                             ),
                         'text/html')
                   );
@@ -306,9 +307,9 @@ class Helpers {
     {
         $nombreAsignado=null;
         $participante_repo=$this->em->getRepository("AppBundle:Participante");
-        $participanteAsignado= $participante_repo->findOneBy($participante->getAsignado());
+        $participanteAsignado= $participante_repo->findOneById($participante->getAsignado());
         if (!is_null($participanteAsignado)) {
-            $nombreAsignado=$participanteAsignado->getNombre;
+            $nombreAsignado=$participanteAsignado->getNombre();
         }
         return $nombreAsignado;
     }

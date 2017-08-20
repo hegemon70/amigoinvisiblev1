@@ -3,16 +3,26 @@
 
 {% block body %}
    <div>
-    
-     
+{#     {{dump(sorteo)}} #}
+    {% if (showHead) %}
+        <article>
+            <section>
+                Asunto: {{asunto}}
+            </section>
+         </article>
+    {%  endif %}
     <article id="mensaje">         
         <h1>Sorteo del Amigo Invisible</h1>
-        {{"now" | date('d/m/y H:i')}}
-        {{sorteo.mensaje}}
+        <section>
+          Realizado el {{"now" | date('d/m/y H:i')}}
+        </section>
+        <section>
+              {{mensaje}}
+        </section>
     </article>
-           <div></div>
+           <div><p/></div>
            <article id="asignado">
-               Debes hacer un regalo {{asignado}}
+               Debes hacer un regalo a {{asignado}}
            </article>
    </div>
    

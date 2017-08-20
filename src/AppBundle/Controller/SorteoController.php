@@ -173,24 +173,47 @@ class SorteoController extends Controller
         $em = $this->getDoctrine()->getManager();
         $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
         $sorteo=$sorteos_rep->findOneById($id);
-        
+
         $form=$this->createForm(SorteoType::class,$sorteo);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) 
-        {
-
-            if($form->get('save')->isClicked())
-            {
-                $sorteo=$form->getData();
-                return $this->render('default/email.html.twig',
-            array('sorteo'=>$sorteo));
-            }
-        }
 
         return $this->render('default/sorteo/mostrar.html.twig',
-            array('form'=>$form->createView(),'sorteo'=>$sorteo));
+            array('form'=>$form->createView(),
+                'sorteo'=>$sorteo,
+                'id'=>$id
+                ));
     }
 
+    /**
+     * @Route("/veremail/{id}", name="sorteo_email")
+     */
+    public function emailAction(Request $request,$id)
+    {
+        $logger=$this->get('logger');
+        $helpers = $this->get('app.helpers');
+        $localizacion=$helpers->dameNombreActionActual($request);
+        $logger->info('entramos en '.$localizacion);
+
+        $em = $this->getDoctrine()->getManager();
+        $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
+        $sorteo=$sorteos_rep->findOneById($id);
+        $participantes=$sorteo->getParticipantes();
+        $longPart=count($participantes);
+        $nombreAsignado=null;
+        if ($longPart>2) 
+        {
+            $participante=$participantes[0];
+             $nombreAsignado=$helpers->dameNombreAsignado($participante);
+        }
+        $asunto=$sorteo->getAsunto();
+        $mensaje=$sorteo->getMensaje();
+        
+         return $this->render('default/email.html.twig',
+            array('asunto'=>$asunto,
+                'mensaje'=>$mensaje,
+                'asignado'=>$nombreAsignado,
+                'showHead'=>true
+                ));
+    }
 }
 

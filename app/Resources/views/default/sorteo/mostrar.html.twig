@@ -22,14 +22,14 @@
         Identificador del sorteo: {{sorteo.codigoSorteo}}
   </section>
 </article>
-     
-      <article class="col-12">
+{#      
+<article class="col-12">
     {{ form_start(form) }}
     {{ form_row(form._token) }}
     {{ form_widget(form.save, {'label':'test'}) }}
     {{ form_end(form,{'render_rest':false}) }}
-</article>
-   
+</article> #}
+   <a href="{{ path('sorteo_email',{'id': id}) }}">mira el email enviado en el sorteo {{id}}</a>
 </div>
 
 
