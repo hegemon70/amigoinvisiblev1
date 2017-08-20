@@ -13,7 +13,7 @@ use Symfony\Component\PropertyAccess\PropertyAccess;
 class Sorteo
 {
 
-    const ENVIADOR="hegemon70@gmail.com";
+    const ENVIADOR="amigoinvisiblefmc@gmail.com";
     /**
      * @var integer
      */

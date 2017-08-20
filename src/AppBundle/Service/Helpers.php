@@ -12,7 +12,8 @@ use AppBundle\Entity\Participante;
 use AppBundle\Entity\Sorteo;
 use Psr\Log\LoggerInterface;
 
-class Helpers {
+class Helpers
+{
  
  	protected $em;
     private $container;
@@ -80,40 +81,7 @@ class Helpers {
         return $exito;
     }
 
-/*
-    public function gestionaParticipantes($idSorteo)
-    {
-        $sorteado=false;
-        $numNoSorteados=self::dameNumParticipantesSinSortearConIdSorteo($idSorteo);
-        if($numNoSorteados>2)//min para sortear
-        {
-            $arrIdParticipantesOrig=self::dameArrayIdParticipantesConIdSorteo($idSorteo);
-            $arrIdSorteados=self::creaReparto($arrIdParticipantesOrig);
-            self::actualizaParticipantes($idSorteo,$arrIdParticipantesOrig,$arrIdSorteados);
-            $sorteado=true;
-        }
-        else
-        {
-            if($numNoSorteados==0)
-            {
-                $this->logger->alert("participantes ya sorteados");
-                $sorteado=true;
-            }
-            else
-            {
-                if($numNoSorteados==-1)
-                {
-                    $this->logger->error("fallo hereedado en gestionaParticipantes");
-                }
-                else //1 ó 2
-                {
-                    $this->logger->error("no mas de 2 Participantes");
-                }
-            }
-        }
-       return $sorteado; 
-    }
-*/
+
     public function dameNumParticipantesSinSortearConIdSorteo($idSorteo)
     {   $count=-1;
         try {
@@ -131,24 +99,7 @@ class Helpers {
         
         return $count;
     }
-/*
-    public function dameArrayIdParticipantesConIdSorteo($idSorteo)
-    {
-       
-          try {
-           $qb = $this->em->createQueryBuilder();
-            $qb->select('participante.id');
-            $qb->from('AppBundle:Participante','participante');
-            $qb->where('participante.sorteo = ?1');
-            $qb->setParameter(1,$idSorteo);
-            $idParticipantes = $qb->getQuery()->getArrayResult();
-        } catch (Exception $e) {
-            $idParticipantes=NULL;
-            $this->logger->error('error en dameArrayIdParticipantesConIdSorteo: '.$e->getMessage());
-        }
-        return $idParticipantes;
-    }
-*/
+
     public function creaReparto($arrIds)
     {   
         $cuentaVueltas=0;
@@ -188,68 +139,7 @@ class Helpers {
         }
         return $valido;
     }
-/*
-    public function actualizaParticipantes($idSorteo,$arrOrig,$arrReparto)
-    {
-        $exito=true; 
-       
-       for ($i=0; $i < count($arrOrig) ; $i++) 
-       { 
-           if(!self::actualizaParticipante($idSorteo,$arrOrig[$i]['id'],$arrReparto[$i]['id']))
-           {
-                $this->logger->error('NECESARIO ROLLBACK');
-                $exito=false;
-                break;//al haber fallo salimos bucle
 
-                //TODO CONTADOR PARA ELIMINAR LOS CREADOS ANTES
-           }
-    
-
-       }
-        if ($exito)
-        {
-            $this->logger->warning('ACTUALIZADOS CORRECTAMENTE LOS PARTICIPANTES');
-        }       
-
-        return $exito;
-    }
-*/
-    /*
-    public function actualizaParticipante($idSorteo,$idPart,$idReceptor)
-    {   
-        $exito=false;
-        $formato='idSorteo: %.0f '; 
-        $mensaje=sprintf($formato,$idSorteo);
-      
-        $formato='idPart: %.0f ';
-        $mensaje.=sprintf($formato,$idPart);
-        
-        $formato='idReceptor: %.0f ';
-        $mensaje.=sprintf($formato,$idReceptor);
-        
-        $this->logger->alert($mensaje); 
-        try 
-        {
-            $em = $this->getDoctrine()->getManager();
-            $qb = $em->createQueryBuilder();
-            $qb->update('AppBundle:Participante', 'p');
-            $qb->set('p.sorteo','?1');
-            $qb->set('p.asignado','?2');
-            $qb->where('p.id = ?3');
-            $qb->setParameter(1,$idSorteo);
-            $qb->setParameter(2,$idReceptor);
-            $qb->setParameter(3,$idPart);
-            $resultado=$qb->getQuery()->execute();
-            $exito=true;
-            $this->logger->info('actualizado '.$resultado);
-        } 
-        catch (Exception $e) 
-        {
-             $this->logger->error('error actualizando partipantes '.$e.getMessage());
-        }  
-         return $exito;
-    }
-*/
     public function enviaCorreosSorteo(Sorteo $sorteo)
     {
         
@@ -262,52 +152,60 @@ class Helpers {
                 $participante->getCorreo(),
                 $participante->getAsignado(),
                 $sorteo->getAsunto(),
-                $sorteo->getMensaje()
+                $sorteo->getMensaje(),
+                $sorteo->getCodigoSorteo()
                 );
             $this->logger->warning('correo enviado al participante: '.$participante->getNombre());
         }
     }
 
- public function enviaCorreoParticipante($nombre,$correo,$asignado,$asunto,$mensaje)
+ public function enviaCorreoParticipante($nombre,$correo,$asignado,$asunto,$mensaje,$codigo)
  {
+    $result=0;
     $enviador=Sorteo::ENVIADOR;
     $nombreAsignado=self::dameNombreAsignado($asignado);
-    //$transporter = new \Swift_SmtpTransport('smtp-relay.gmail.com');
+    if (!is_null($nombreAsignado)) 
+    {
+      //$transporter = new \Swift_SmtpTransport('smtp-relay.gmail.com');
         $transporter = new \Swift_SmtpTransport('aspmx.l.google.com');
         //$transporter = new \Swift_SmtpTransport('smtp.gmail.com');
         $mailer = new \Swift_Mailer($transporter);
-       
- 
           try {
                 $mensaje = (new \Swift_Message($asunto));
                 $mensaje->setFrom($enviador);
                 $mensaje->setTo($correo);
-                $mensaje->setBody(
-                      $this->renderView(
+                //https://stackoverflow.com/questions/9143993/swiftmailerbundle-how-can-send-email-with-html-content-symfony-2
+               // $mensaje->setContentType("text/html");
+                $mensaje->setBody('prueba'
+                    /*  $this->renderView(
                         'default/Email.html.twig',
                         array(  'asunto' => $asunto,
                                 'mensaje'=> $mensaje,
                                 'Asignado'=> $nombreAsignado,
+                                'codigo'=> $codigo,
                                 'showHead'=>false
                             ),
                         'text/html')
-                  );
+                */  );
              $result=$mailer->send($mensaje);
              
           } catch (Exception $e) {
               $this->logger->error('fallo al enviar'.$correo." ".$e->getMessage());
           }
             
+    }
+
+    
             //https://swiftmailer.symfony.com/docs/sending.html
             //Using the send() Method
       return $result;
  }
 
-    public function dameNombreAsignado(Participante $participante)
+    public function dameNombreAsignado($asignado)
     {
         $nombreAsignado=null;
         $participante_repo=$this->em->getRepository("AppBundle:Participante");
-        $participanteAsignado= $participante_repo->findOneById($participante->getAsignado());
+        $participanteAsignado= $participante_repo->findOneById($asignado);
         if (!is_null($participanteAsignado)) {
             $nombreAsignado=$participanteAsignado->getNombre();
         }
@@ -345,26 +243,7 @@ class Helpers {
         }     
         return $count;
     }
-/*
-    public function dameArrayParticipantesNoSorteados($idSorteoProv)
-    {
-         $logger=$this->get('logger');
-          try {
-            $em = $this->getDoctrine()->getManager();
-            $qb = $em->createQueryBuilder();
-            $qb->select('p');
-            $qb->from('AppBundle:Participante','p');
-            $qb->where('p.sorteo = ?1');
-            $qb->setParameter(1,$idSorteoProv);
-            //TODO CAMBIAR NULL POR LA ID DEL SORTEO DE LA SESSION
-            $idParticipantes = $qb->getQuery()->getArrayResult();
-        } catch (Exception $e) {
-            $idParticipantes=NULL;
-            $logger.error('error en DefaultController/dameArrayParticipantesNoSorteados: '.$e->getMessage());
-        }
-        return $idParticipantes;
-    }
-*/
+
     public function dameArrayParticipantesNoSorteados()
     {
         

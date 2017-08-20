@@ -119,7 +119,8 @@ class SorteoController extends Controller
                         $participante->getCorreo(),
                         $participante->getAsignado(),
                         $sorteo->getAsunto(),
-                        $sorteo->getMensaje()
+                        $sorteo->getMensaje(),
+                        $sorteo->getCodigoSorteo()
                     );
                    //https://swiftmailer.symfony.com/docs/sending.html
                    //Using the send() Method
@@ -207,11 +208,13 @@ class SorteoController extends Controller
         }
         $asunto=$sorteo->getAsunto();
         $mensaje=$sorteo->getMensaje();
+         $codigo=$sorteo->getCodigoSorteo();
         
          return $this->render('default/email.html.twig',
             array('asunto'=>$asunto,
                 'mensaje'=>$mensaje,
                 'asignado'=>$nombreAsignado,
+                'codigo'=>$codigo,
                 'showHead'=>true
                 ));
     }

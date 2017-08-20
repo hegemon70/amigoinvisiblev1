@@ -1,34 +1,44 @@
+var $collectionHolder;
 
-//https://github.com/ninsuo/symfony-collection/issues/47
+// setup an "add a participante" link
+var $addParticipanteLink = ('<a href="#" class="add_participante_link">Add a participante</a>');
+var $newLinkLi = $('<li></li>').append($addParticipanteLink);
 
- $('.mis_participantes').collection({
-            //prototype_name: '{{ form.participantes.vars.prototype.vars.name }}',
-            //name_prefix: '{{ form.participantes.vars.full_name }}',
-            allow_add: true,
-            'add': '<a href="#" class="btn-sm btn-default collection-add" title="añadir Participante"><span class="glyphicon glyphicon-plus-sign"></span></a>',
-            allow_remove: true,
-            //'remove': '<a href="#" class="btn-sm btn-default collection-remove" title="quitar Participante"><span class="glyphicon glyphicon-trash"></span></a>',
-            allow_down: false,
-            allow_up: false,
-            //custom_add_location: true,
-            add_at_the_end: true,
-            allow_duplicate: false,
-            min: 3,
-            hide_useless_buttons: true,
-            drag_drop: false,
-            position_field_selector: '.my-position',
-            before_remove: function(collection, element) 
-            { 
-                var hijosPuros=collection["0"].childElementCount;
-                var indiceUltima=hijosPuros-3;
-                var indiceElemento=element["0"].id.split("_")["2"];
-               if (indiceElemento==indiceUltima)
-                  return true
-               else
-                { 
-                  alert("no puedes borrar mas que la ultima"); 
-                  return false
-                  }
-            }
-        });
+jQuery(document).ready(function() {
+    // Get the ul that holds the collection of participantes
+    $collectionHolder = $('ul.participantes');
 
+    // add the "add a participante" anchor and li to the participantes ul
+    $collectionHolder.append($newLinkLi);
+
+    // count the current form inputs we have (e.g. 2), use that as the new
+    // index when inserting a new item (e.g. 2)
+    $collectionHolder.data('index', $collectionHolder.find(':input').length);
+
+    $addParticipanteLink.on('click', function(e) {
+        // prevent the link from creating a "#" on the URL
+        e.preventDefault();
+
+        // add a new participante form (see next code block)
+        addParticipanteForm($collectionHolder, $newLinkLi);
+    });
+});
+
+function addParticipanteForm($collectionHolder, $newLinkLi) {
+    // Get the data-prototype explained earlier
+    var prototype = $collectionHolder.data('prototype');
+
+    // get the new index
+    var index = $collectionHolder.data('index');
+
+    // Replace '__name__' in the prototype's HTML to
+    // instead be a number based on how many items we have
+    var newForm = prototype.replace(/__name__/g, index);
+
+    // increase the index with one for the next item
+    $collectionHolder.data('index', index + 1);
+
+    // Display the form in the page in an li, before the "Add a participante" link li
+    var $newFormLi = $('<li></li>').append(newForm);
+    $newLinkLi.before($newFormLi);
+}
