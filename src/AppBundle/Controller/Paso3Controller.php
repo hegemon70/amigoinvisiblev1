@@ -24,9 +24,9 @@ class Paso3Controller extends Controller
 
         $em = $this->getDoctrine()->getManager();
         $sorteos_rep=$em->getRepository("AppBundle:Sorteo");
-        $sorteo=$sorteos_rep->findOneById($id);
+        $sorteo=$sorteos_rep->find($id);
         $idSorteo=$sorteo->getId();
-        
+          
         $form=$this->createForm(SorteoType::class,$sorteo);
     	$form->handleRequest($request);
 
@@ -34,9 +34,13 @@ class Paso3Controller extends Controller
         {
 
             if($form->get('save')->isClicked())
-            {
-            	$helpers->enviaCorreosSorteo($sorteo);
-            	return $this->redirectToRoute('sorteo_mostrar',array('id'=>$idSorteo));
+            {   
+               // $sorteo = $form->getData();
+                $logger->warning('hemos hecho clic en boton save de '.$localizacion);
+ 
+
+            
+            	return $this->redirectToRoute('envio',array('id'=>$idSorteo));
             }
             else
             {
@@ -48,4 +52,7 @@ class Paso3Controller extends Controller
                          array( 'form'=>$form->createView()
                 ));
     }
+
+    
+
 }

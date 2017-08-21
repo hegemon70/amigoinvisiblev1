@@ -57,7 +57,7 @@ class ParticipanteType extends AbstractType
     {
             $builder= $event->getForm();
             $participante=$event->getForm()->getData();
-            $this->logger->warning('estoy en el onPostSubmit del Participante '.$participante);
+            $this->logger->info('estoy en el onPostSubmit del Participante '.$participante);
     /*
         if(null != $event->getData())
         {

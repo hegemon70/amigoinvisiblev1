@@ -113,6 +113,7 @@ class SorteoController extends Controller
                 {
                     $correo=$participanteModif['ParticipanteType']['correo'];
                     $participante->setCorreo($correo);
+                    /*
                     //TODO enviamos correo
                    $resultado=$helpers->enviaCorreoParticipante(
                         $participante->getNombre(),
@@ -124,6 +125,43 @@ class SorteoController extends Controller
                     );
                    //https://swiftmailer.symfony.com/docs/sending.html
                    //Using the send() Method
+                   */
+                                  $resultado=0;
+                    $enviador=Sorteo::ENVIADOR;
+                    $asignado = $participante->getAsignado();
+                    $nombre = $participante->getNombre();
+                    $correo = $participante->getCorreo();
+                    $nombreAsignado=$helpers->dameNombreAsignado($asignado);
+                    $asunto = $sorteo->getAsunto();
+                    $mensaje= $sorteo->getMensaje();
+                    $codigo = $sorteo->getCodigoSorteo();
+                     //$transporter = new \Swift_SmtpTransport('smtp-relay.gmail.com');
+        $transporter = new \Swift_SmtpTransport('aspmx.l.google.com');
+        //$transporter = new \Swift_SmtpTransport('smtp.gmail.com');
+        $mailer = new \Swift_Mailer($transporter);
+          try {
+                $mensaje = (new \Swift_Message($asunto));
+                $mensaje->setFrom($enviador);
+                $mensaje->setTo($correo);
+                //https://stackoverflow.com/questions/9143993/swiftmailerbundle-how-can-send-email-with-html-content-symfony-2
+                $mensaje->setContentType("text/html");
+                $mensaje->setBody(
+                      $this->renderView(
+                        'default/Email.html.twig',
+                        array(  'asunto' => $asunto,
+                                'mensaje'=> $mensaje,
+                                'asignado'=> $nombreAsignado,
+                                'codigo'=> $codigo,
+                                'nombre'=> $nombre,
+                                'showHead'=>false
+                            ),
+                        'text/html')
+                  );
+             $resultado=$mailer->send($mensaje);
+             
+          } catch (Exception $e) {
+              $this->logger->error('fallo al enviar'.$correo." ".$e->getMessage());
+          }
                    if ($resultado>0)
                    {
                      //TODO SALVAR EL CAMBIO EN PARTICIPANTE
@@ -204,7 +242,12 @@ class SorteoController extends Controller
         if ($longPart>2) 
         {
             $participante=$participantes[0];
-             $nombreAsignado=$helpers->dameNombreAsignado($participante);
+            $nombre=$participante->getNombre();
+            // $idPar=$participante->getId();
+            // $helpers->logeaUnInt($idPar,"este el id del participante sondeado: ");
+            $asignado=$participante->getAsignado();
+            // $helpers->logeaUnInt($asignado,"este el id del participante asignado: ");
+            $nombreAsignado=$helpers->dameNombreAsignado($asignado);
         }
         $asunto=$sorteo->getAsunto();
         $mensaje=$sorteo->getMensaje();
@@ -215,6 +258,7 @@ class SorteoController extends Controller
                 'mensaje'=>$mensaje,
                 'asignado'=>$nombreAsignado,
                 'codigo'=>$codigo,
+                'nombre'=>$nombre,
                 'showHead'=>true
                 ));
     }

@@ -2,13 +2,15 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-        
+     
    {{ form_start(form) }}
  
    {# h2{REVISA TU LISTADO DE AMIGOS...}table>thead>tr>th*3^tbody>tr>td3 #}
   <header> 
 <h2>REVISA TU LISTADO DE AMIGOS...</h2>
    </header>
+   <div>
+    
    <article class="col-sm-12" >
      <h5><strong>Codigo Sorteo</strong></h5>
        {{ form_widget(form.codigoSorteo,{'attr':{'disabled':'disabled'}}) }}
@@ -58,10 +60,11 @@
     {{ form_row(form._token) }}
     {{ form_widget(form.save, {'label':'enviar correos'}) }}
     {{ form_widget(form.cancel, {'label':'Volver'}) }}
-    {{ form_end(form,{'render_rest':false}) }}
+   
 </article>
-
  
+</div>
+ {{ form_end(form,{'render_rest':false}) }}
                        
 {% endblock %}
 

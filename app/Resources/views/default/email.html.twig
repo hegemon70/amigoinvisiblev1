@@ -6,29 +6,34 @@
 {#     {{dump(sorteo)}} #}
     {% if (showHead) %}
         <article>
-            <section>
+            <section id="asunto">
                 Asunto: {{asunto}}
             </section>
          </article>
     {%  endif %}
     <article id="mensaje">         
         <h1>Sorteo del Amigo Invisible</h1>
-        <section>
+        <section id="nombre">
+          Hola {{nombre}}
+        </section>
+        <section id="fecha">
           Realizado el {{"now" | date('d/m/y H:i')}}
         </section>
-        <section>
+        <section id="cuerpo">
               {{mensaje}}
         </section>
     </article>
            <div><p/></div>
-           <article id="asignado">
+    <article>
+           <section id="asignado">
                Debes hacer un regalo a {{asignado}}
-           </article>
-           <article>
+           </section>
+           <section>
             <h6>
                Has recibido este email porque alguien te ha incluido en un sorteo de Amigo invisible con el Id: {{codigo}}
             </h6>
-           </article>
+           </section>
+    </article>
    </div>
    
        

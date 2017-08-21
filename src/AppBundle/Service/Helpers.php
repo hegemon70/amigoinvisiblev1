@@ -200,7 +200,8 @@ class Helpers
             //Using the send() Method
       return $result;
  }
-
+ 
+//pre: asignado es un int del id del campo asignado de la entidad participante 
     public function dameNombreAsignado($asignado)
     {
         $nombreAsignado=null;
